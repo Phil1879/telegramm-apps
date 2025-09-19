@@ -49,31 +49,58 @@
     tg.expand(); // разворачиваем на весь экран
 
     function sendData() {
+      const answers = [
+        { field_name: "Що буде, якщо це произойдет?", answer: document.getElementById('field1').value },
+        { field_name: "Що буде, якщо цього не произойдет?", answer: document.getElementById('field2').value },
+        { field_name: "Чого не буде, якщо це произойдет?", answer: document.getElementById('field3').value },
+        { field_name: "Чого не буде, якщо цього не произойдет?", answer: document.getElementById('field4').value }
+      ];
+
       const data = {
-        bot: window.location.pathname.split('/')[1] || 'unknown_bot', // имя бота из папки
+        bot: 'Досягайка',
         task: 'Завдання 1: Квадрат Декарта',
-        user: tg.initDataUnsafe.user, // информация о пользователе
-        answers: {
-          field1: document.getElementById('field1').value,
-          field2: document.getElementById('field2').value,
-          field3: document.getElementById('field3').value,
-          field4: document.getElementById('field4').value
-        }
+        user: tg.initDataUnsafe.user,
+        answers: answers,
+        status_msg: true
       };
 
       fetch("https://n8n.psyhodoc.xyz/webhook/a8215a45-b2aa-4e53-936f-a0dd8331b87b", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data),
-})
-.then(res => res.text())
-.then(console.log)
-.catch(console.error);
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("HTTP error " + res.status);
+        }
+        return res.text();
+      })
+      .then(result => {
+        console.log("✅ Успех:", result);
+        tg.close(); // закрываем приложение только после успешной отправки
+      })
+      .catch(err => {
+        console.error("❌ Ошибка:", err);
 
+        // Отправляем ошибку на тот же вебхук
+        const errorData = {
+          bot: 'Досягайка',
+          task: 'Завдання 1: Квадрат Декарта',
+          user: tg.initDataUnsafe.user,
+          error: err.message,
+          status_msg: false
+        };
+
+        fetch("https://n8n.psyhodoc.xyz/webhook/a8215a45-b2aa-4e53-936f-a0dd8331b87b", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(errorData),
+        });
+      });
     }
   </script>
 
-  <!-- Bootstrap JS (необязательно) -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
