@@ -24,12 +24,12 @@
 
     <div id="questions">
         <div class="mb-3">
-        <label for="q1" class="question-label">Ваше ім'я та прізвище (для сертифікату)</label>
-        <textarea id="q1" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+        <label for="q11" class="question-label">Ваше ім'я та прізвище (для сертифікату)</label>
+        <textarea id="q11" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
       </div>
       <div class="mb-3">
-        <label for="q1" class="question-label">1. Що таке ПТСР з точки зору фізіології та нервової системи?</label>
-        <textarea id="q1" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+        <label for="q12" class="question-label">1. Що таке ПТСР з точки зору фізіології та нервової системи?</label>
+        <textarea id="q12" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
       </div>
       <div class="mb-3">
         <label for="q2" class="question-label">2. Яку роль відіграють «емоційні маски» у травматичному досвіді?</label>
@@ -87,12 +87,16 @@
         answer: field.value.trim()
       }));
 
-      // проверка: все поля заполнены
-      const empty = answers.find(a => !a.answer);
-      if (empty) {
-        alert("Будь ласка, заповніть усі поля перед відправкою!");
+        // проверка: все поля заполнены
+        const empty = answers.find(a => !a.answer);
+        if (empty) {
+        tg.showAlert("Будь ласка, заповніть усі поля перед відправкою!");
+        // ставим фокус на первое пустое поле
+        const firstEmptyField = fields.find(field => !field.value.trim());
+        if (firstEmptyField) firstEmptyField.focus();
         return;
-      }
+        }
+
 
       const data = {
         bot: '@PTSDtherapyBOT',
