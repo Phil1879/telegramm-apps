@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ПТСР</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .question-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .answer-field {
+      height: 120px;
+      resize: none;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container py-3">
+    <h1 class="mb-4 text-center">Анкета</h1>
+
+    <div id="questions">
+        <div class="mb-3">
+        <label for="q0" class="question-label">Ваше ім'я та прізвище</label>
+        <textarea id="q0" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q1" class="question-label">Ведіть ваш e-mail</label>
+        <textarea id="q1" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+
+    <button class="btn btn-primary w-100" onclick="sendData()">Надіслати анкету</button>
+  </div>
+
+  <!-- Telegram SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    function sendData() {
+      // собираем все поля
+      const fields = Array.from(document.querySelectorAll("textarea"));
+      const answers = fields.map((field, index) => ({
+        field_name: field.previousElementSibling.innerText,
+        answer: field.value.trim()
+      }));
+
+        // проверка: все поля заполнены
+        const empty = answers.find(a => !a.answer);
+        if (empty) {
+        tg.showAlert("Будь ласка, заповніть усі поля перед відправкою!");
+        // ставим фокус на первое пустое поле
+        const firstEmptyField = fields.find(field => !field.value.trim());
+        if (firstEmptyField) firstEmptyField.focus();
+        return;
+        }
+
+
+      const data = {
+        bot: '@PTSDtherapyBOT',
+        task: 'contactForm',
+        user: tg.initDataUnsafe.user,
+        answers: answers,
+        status_msg: true
+      };
+
+      fetch("https://n8n.psyhodoc.xyz/webhook/ptsd-final", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.text();
+      })
+      .then(result => {
+        console.log("✅ Успех:", result);
+        tg.close();
+      })
+      .catch(err => {
+        console.error("❌ Ошибка:", err);
+        const errorData = {
+          bot: '@PTSDtherapyBOT',
+          task: 'contactForm',
+          user: tg.initDataUnsafe.user,
+          error: err.message,
+          status_msg: false
+        };
+        fetch("https://n8n.psyhodoc.xyz/webhook/ptsd-final", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(errorData),
+        });
+      });
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
