@@ -23,6 +23,10 @@
     <h1 class="mb-4 text-center">Фінальний тест</h1>
 
     <div id="questions">
+        <div class="mb-3">
+        <label for="q1" class="question-label">Ваше ім'я та прізвище (для сертифікату)</label>
+        <textarea id="q1" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
       <div class="mb-3">
         <label for="q1" class="question-label">1. Що таке ПТСР з точки зору фізіології та нервової системи?</label>
         <textarea id="q1" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
@@ -91,14 +95,14 @@
       }
 
       const data = {
-        bot: 'Досягайка',
+        bot: '@PTSDtherapyBOT',
         task: 'Фінальний тест',
         user: tg.initDataUnsafe.user,
         answers: answers,
         status_msg: true
       };
 
-      fetch("https://n8n.psyhodoc.xyz/webhook/a8215a45-b2aa-4e53-936f-a0dd8331b87b", {
+      fetch("https://n8n.psyhodoc.xyz/webhook/ptsd-final", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -114,13 +118,13 @@
       .catch(err => {
         console.error("❌ Ошибка:", err);
         const errorData = {
-          bot: 'Досягайка',
+          bot: '@PTSDtherapyBOT',
           task: 'Фінальний тест',
           user: tg.initDataUnsafe.user,
           error: err.message,
           status_msg: false
         };
-        fetch("https://n8n.psyhodoc.xyz/webhook/a8215a45-b2aa-4e53-936f-a0dd8331b87b", {
+        fetch("https://n8n.psyhodoc.xyz/webhook/ptsd-final", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(errorData),
