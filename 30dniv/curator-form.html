@@ -20,12 +20,12 @@
 </head>
 <body class="bg-light">
   <div class="container py-3">
-    <h1 class="mb-4 text-center">Анкета</h1>
+    <h1 class="mb-4 text-center">Анкета куратори</h1>
 
-    <div id="questions">
+<div id="questions">
   <div class="mb-3">
-    <label for="q0" class="question-label">Ваше ім'я та прізвище</label>
-    <textarea id="q0" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+    <label for="q0" class="question-label">Ваше ім'я та прізвище (або нікнейм)</label>
+    <textarea id="q0" class="form-control answer-field" placeholder="Можна використовувати псевдонім. Головне - щоб ми знали, як до тебе звертатися." required></textarea>
   </div>
 
   <div class="mb-3">
@@ -34,12 +34,15 @@
   </div>
 
   <div class="mb-3">
-    <label for="q2" class="question-label">Чи бажаєте ви стати куратором?</label>
-    <select id="q2" class="form-control answer-field" required>
-      <option value="">Оберіть варіант...</option>
-      <option value="так">так</option>
-      <option value="ні">ні</option>
-    </select>
+    <p class="question-label">Чи бажаєте ви стати куратором?</p>
+    <div>
+      <input type="radio" id="q2_yes" name="q2" value="так" required>
+      <label for="q2_yes">так</label>
+    </div>
+    <div>
+      <input type="radio" id="q2_no" name="q2" value="ні">
+      <label for="q2_no">ні</label>
+    </div>
   </div>
 </div>
 
