@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фінальний тест</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .question-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .answer-field {
+      height: 120px;
+      resize: none;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container py-3">
+    <h1 class="mb-4 text-center">Фінальний тест</h1>
+
+    <div id="questions">
+      <div class="mb-3">
+        <label for="q1" class="question-label">1. Що таке ПТСР з точки зору фізіології та нервової системи?</label>
+        <textarea id="q1" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q2" class="question-label">2. Яку роль відіграють «емоційні маски» у травматичному досвіді?</label>
+        <textarea id="q2" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q3" class="question-label">3. Опиши техніку дихання 4–7–8 та її вплив на стан.</label>
+        <textarea id="q3" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q4" class="question-label">4. Який метод використовується у польському військовому інституті бойового стресу для роботи з пам’яттю?</label>
+        <textarea id="q4" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q5" class="question-label">5. У чому полягає феномен «вини вижившого» і як з ним працювати?</label>
+        <textarea id="q5" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q6" class="question-label">6. Що символізує «Рука підтримки» і як її використовувати?</label>
+        <textarea id="q6" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q7" class="question-label">7. Як безпечно виражати гнів, не руйнуючи себе чи інших?</label>
+        <textarea id="q7" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q8" class="question-label">8. Яку мету має вправа «Лист довіри»?</label>
+        <textarea id="q8" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q9" class="question-label">9. Як медитація «Я після» допомагає формувати нову ідентичність?</label>
+        <textarea id="q9" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="q10" class="question-label">10. Що таке «інтеграція» в контексті зцілення та чому вона важлива?</label>
+        <textarea id="q10" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-100" onclick="sendData()">Відправити тест</button>
+  </div>
+
+  <!-- Telegram SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    function sendData() {
+      // собираем все поля
+      const fields = Array.from(document.querySelectorAll("textarea"));
+      const answers = fields.map((field, index) => ({
+        field_name: field.previousElementSibling.innerText,
+        answer: field.value.trim()
+      }));
+
+      // проверка: все поля заполнены
+      const empty = answers.find(a => !a.answer);
+      if (empty) {
+        alert("Будь ласка, заповніть усі поля перед відправкою!");
+        return;
+      }
+
+      const data = {
+        bot: 'Досягайка',
+        task: 'Фінальний тест',
+        user: tg.initDataUnsafe.user,
+        answers: answers,
+        status_msg: true
+      };
+
+      fetch("https://n8n.psyhodoc.xyz/webhook/a8215a45-b2aa-4e53-936f-a0dd8331b87b", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.text();
+      })
+      .then(result => {
+        console.log("✅ Успех:", result);
+        tg.close();
+      })
+      .catch(err => {
+        console.error("❌ Ошибка:", err);
+        const errorData = {
+          bot: 'Досягайка',
+          task: 'Фінальний тест',
+          user: tg.initDataUnsafe.user,
+          error: err.message,
+          status_msg: false
+        };
+        fetch("https://n8n.psyhodoc.xyz/webhook/a8215a45-b2aa-4e53-936f-a0dd8331b87b", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(errorData),
+        });
+      });
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
