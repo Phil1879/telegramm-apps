@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Учет звонков</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-section {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #2c3e50;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    .field-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+    .field-help {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 3px;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container py-3">
+    <h1 class="mb-4 text-center">Учет звонков</h1>
+
+    <div id="formContainer">
+      <!-- Основная информация -->
+      <div class="form-section">
+        <div class="section-title">Основная информация</div>
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="field-label">Статус</label>
+            <div class="field-help">целевой \ не целевой</div>
+            <select class="form-select" id="status" data-name="status" required>
+              <option value="">Выберите статус</option>
+              <option value="целевой">Целевой</option>
+              <option value="не целевой">Не целевой</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="field-label">Дата звонка</label>
+            <div class="field-help">Формат: 'ГГГГ-ММ-ДД' (например: '2024-01-15')</div>
+            <input type="date" class="form-control" id="call_date" data-name="call_date" required>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="field-label">Имя клиента</label>
+            <input type="text" class="form-control" id="name" data-name="name" required>
+          </div>
+          <div class="col-md-6">
+            <label class="field-label">Номер телефона</label>
+            <input type="tel" class="form-control" id="phone" data-name="phone" required>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="field-label">Город</label>
+            <input type="text" class="form-control" id="city" data-name="city" required>
+          </div>
+          <div class="col-md-6">
+            <label class="field-label">Кто звонил</label>
+            <div class="field-help">мама\папа\другой родственник...</div>
+            <select class="form-select" id="caller_type" data-name="caller_type" required>
+              <option value="">Выберите тип</option>
+              <option value="мама">Мама</option>
+              <option value="папа">Папа</option>
+              <option value="другой родственник">Другой родственник</option>
+              <option value="друг">Друг</option>
+              <option value="сам клиент">Сам клиент</option>
+              <option value="другое">Другое</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="field-label">Возраст клиента</label>
+            <input type="number" class="form-control" id="client_age" data-name="client_age" min="1" max="120" required>
+          </div>
+          <div class="col-md-6">
+            <label class="field-label">Обсуждалась ли цена</label>
+            <div class="form-check mt-2">
+              <input class="form-check-input" type="checkbox" id="price_discussed" data-name="price_discussed">
+              <label class="form-check-label" for="price_discussed">
+                Да, цена обсуждалась
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Информация о зависимости -->
+      <div class="form-section">
+        <div class="section-title">Информация о зависимости</div>
+        
+        <div class="mb-3">
+          <label class="field-label">От чего зависимость</label>
+          <textarea class="form-control" id="addiction" data-name="addiction" rows="2" required></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="field-label">Сколько употребляет</label>
+          <textarea class="form-control" id="usage_duration" data-name="usage_duration" rows="2" required></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="field-label">Что пробовали для работы с зависимостью ранее</label>
+          <textarea class="form-control" id="prev_exp" data-name="prev_exp" rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- Дополнительная информация -->
+      <div class="form-section">
+        <div class="section-title">Дополнительная информация</div>
+        
+        <div class="mb-3">
+          <label class="field-label">Дата и время следующего звонка</label>
+          <div class="field-help">Формат: '2024-01-15 00:00:00'</div>
+          <input type="datetime-local" class="form-control" id="next_call_date" data-name="next_call_date">
+        </div>
+
+        <div class="mb-3">
+          <label class="field-label">Заметки</label>
+          <textarea class="form-control" id="notes" data-name="notes" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="field-label">Путь или ссылка к файлу с записью звонка</label>
+          <input type="text" class="form-control" id="recording_path" data-name="recording_path">
+        </div>
+
+        <div class="mb-3">
+          <label class="field-label">Мои вопросы для начальника (его зовут Паша)</label>
+          <textarea class="form-control" id="questions" data-name="questions" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="field-label">Скидка</label>
+          <input type="text" class="form-control" id="discount" data-name="discount">
+        </div>
+
+        <div class="mb-3">
+          <label class="field-label">Что отправить в дополнительные материалы</label>
+          <textarea class="form-control" id="sent_materials" data-name="sent_materials" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-100" onclick="sendData()">Сохранить данные</button>
+  </div>
+
+  <!-- Telegram SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    // Устанавливаем текущую дату по умолчанию для поля call_date
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('call_date').value = `${yyyy}-${mm}-${dd}`;
+    });
+
+    function sendData() {
+      // Собираем все поля
+      const fields = document.querySelectorAll('#formContainer input, #formContainer select, #formContainer textarea');
+      const formData = {};
+      
+      fields.forEach(field => {
+        const fieldName = field.getAttribute('data-name');
+        let value;
+        
+        if (field.type === 'checkbox') {
+          value = field.checked ? 1 : 0;
+        } else {
+          value = field.value.trim();
+        }
+        
+        formData[fieldName] = value;
+      });
+
+      // Проверка обязательных полей
+      const requiredFields = document.querySelectorAll('[required]');
+      let hasEmptyFields = false;
+      
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          hasEmptyFields = true;
+          field.classList.add('is-invalid');
+        } else {
+          field.classList.remove('is-invalid');
+        }
+      });
+
+      if (hasEmptyFields) {
+        tg.showAlert("Пожалуйста, заполните все обязательные поля!");
+        return;
+      }
+
+      // Форматирование дат для отправки
+      if (formData.call_date) {
+        // Убедимся, что дата в правильном формате
+        const date = new Date(formData.call_date);
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        formData.call_date = `${yyyy}-${mm}-${dd}`;
+      }
+
+      if (formData.next_call_date) {
+        // Преобразуем в формат '2024-01-15 00:00:00'
+        const date = new Date(formData.next_call_date);
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        const hh = String(date.getHours()).padStart(2, '0');
+        const min = String(date.getMinutes()).padStart(2, '0');
+        const ss = String(date.getSeconds()).padStart(2, '0');
+        formData.next_call_date = `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+      }
+
+      const data = {
+        bot: '@kazarian_30dniv_bot',
+        task: 'contactForm',
+        user: tg.initDataUnsafe.user,
+        formData: formData,
+        status_msg: true
+      };
+
+      fetch("https://n8n.psyhodoc.xyz/webhook/my-call-app", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.text();
+      })
+      .then(result => {
+        console.log("✅ Успех:", result);
+        tg.showAlert("Данные успешно сохранены!", () => {
+          tg.close();
+        });
+      })
+      .catch(err => {
+        console.error("❌ Ошибка:", err);
+        const errorData = {
+          bot: '@kazarian_30dniv_bot',
+          task: 'contactForm',
+          user: tg.initDataUnsafe.user,
+          error: err.message,
+          formData: formData,
+          status_msg: false
+        };
+        
+        tg.showAlert("Произошла ошибка при сохранении данных. Попробуйте еще раз.");
+        
+        fetch("https://n8n.psyhodoc.xyz/webhook/my-call-app", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(errorData),
+        });
+      });
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
