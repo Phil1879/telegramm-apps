@@ -47,6 +47,10 @@
 
     function sendData() {
 // собираем все поля
+const nickField = document.getElementById('q0');
+  if (!nickField.value.trim()) {
+    nickField.value = 'anonim';
+  }
 const textareas = Array.from(document.querySelectorAll("textarea"));
 const radios = Array.from(document.querySelectorAll("input[type='radio']:checked"));
 
@@ -63,13 +67,12 @@ const answers = [
 
 
         // проверка: все поля заполнены
-        const empty = answers.find(a => !a.answer);
-        if (empty) {
-        tg.showAlert("Введите текст для отправки");
-        // ставим фокус на первое пустое поле
-        const firstEmptyField = fields.find(field => !field.value.trim());
-        if (firstEmptyField) firstEmptyField.focus();
-        return;
+        const requiredFields = Array.from(document.querySelectorAll("textarea[required]"));
+        const emptyRequiredField = requiredFields.find(field => !field.value.trim());
+        if (emptyRequiredField) {
+            tg.showAlert("Введите текст для отправки");
+            emptyRequiredField.focus();
+            return;
         }
 
 
