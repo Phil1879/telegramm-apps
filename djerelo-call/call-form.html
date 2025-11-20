@@ -50,6 +50,7 @@
               <option value="">Выберите статус</option>
               <option value="целевой">Целевой</option>
               <option value="не целевой">Не целевой</option>
+              <option value="другое">Другое</option>
             </select>
           </div>
           <div class="col-md-6">
@@ -73,17 +74,16 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="field-label">Город</label>
-            <input type="text" class="form-control" id="city" data-name="city" required>
+            <input type="text" class="form-control" id="city" data-name="city">
           </div>
           <div class="col-md-6">
             <label class="field-label">Кто звонил</label>
             <div class="field-help">мама\папа\другой родственник...</div>
-            <select class="form-select" id="caller_type" data-name="caller_type" required>
+            <select class="form-select" id="caller_type" data-name="caller_type">
               <option value="">Выберите тип</option>
               <option value="мама">Мама</option>
               <option value="папа">Папа</option>
               <option value="другой родственник">Другой родственник</option>
-              <option value="друг">Друг</option>
               <option value="сам клиент">Сам клиент</option>
               <option value="другое">Другое</option>
             </select>
@@ -93,7 +93,7 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="field-label">Возраст клиента</label>
-            <input type="number" class="form-control" id="client_age" data-name="client_age" min="1" max="120" required>
+            <input type="number" class="form-control" id="client_age" data-name="client_age" min="14" max="50">
           </div>
           <div class="col-md-6">
             <label class="field-label">Обсуждалась ли цена</label>
@@ -113,12 +113,12 @@
         
         <div class="mb-3">
           <label class="field-label">От чего зависимость</label>
-          <textarea class="form-control" id="addiction" data-name="addiction" rows="2" required></textarea>
+          <textarea class="form-control" id="addiction" data-name="addiction" rows="2"></textarea>
         </div>
 
         <div class="mb-3">
           <label class="field-label">Сколько употребляет</label>
-          <textarea class="form-control" id="usage_duration" data-name="usage_duration" rows="2" required></textarea>
+          <textarea class="form-control" id="usage_duration" data-name="usage_duration" rows="2"></textarea>
         </div>
 
         <div class="mb-3">
@@ -148,7 +148,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="field-label">Мои вопросы для начальника (его зовут Паша)</label>
+          <label class="field-label">Вопросы для Паши</label>
           <textarea class="form-control" id="questions" data-name="questions" rows="3"></textarea>
         </div>
 
