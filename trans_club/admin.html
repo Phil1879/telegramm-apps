@@ -37,7 +37,7 @@
     </div>
     <div class="mb-3">
         <label for="q3" class="question-label">Дата</label>
-        <textarea id="q3" class="form-control answer-field" placeholder="По умолчанию эта СБ" required></textarea>
+        <textarea id="q3" class="form-control answer-field" placeholder="По умолчанию эта ПТ" required></textarea>
     </div>
 </div>
 
@@ -48,18 +48,18 @@
   <!-- Автозаполнение -->
 <script>
 // Функция для получения следующей субботы
-function getNextSaturday() {
+function getNextFriday() {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    let daysUntilSaturday = 6 - dayOfWeek;
-    if (daysUntilSaturday < 0) daysUntilSaturday += 7;
+    let daysUntilFriday = 5 - dayOfWeek;
+    if (daysUntilFriday < 0) daysUntilFriday += 7;
     
-    const nextSaturday = new Date(today);
-    nextSaturday.setDate(today.getDate() + daysUntilSaturday);
+    const nextFriday = new Date(today);
+    nextFriday.setDate(today.getDate() + daysUntilFriday);
     
-    const year = nextSaturday.getFullYear();
-    const month = String(nextSaturday.getMonth() + 1).padStart(2, '0');
-    const day = String(nextSaturday.getDate()).padStart(2, '0');
+    const year = nextFriday.getFullYear();
+    const month = String(nextFriday.getMonth() + 1).padStart(2, '0');
+    const day = String(nextFriday.getDate()).padStart(2, '0');
     
     return `${year}-${month}-${day}`;
 }
@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
     timeField.value = '19:00';
     timeField.placeholder = '19:00';
     
-    dateField.value = getNextSaturday();
-    dateField.placeholder = getNextSaturday();
+    dateField.value = getNextFriday();
+    dateField.placeholder = getNextFriday();
     
     // Очистка при фокусе
     timeField.addEventListener('focus', function() {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     dateField.addEventListener('focus', function() {
-        if (this.value === getNextSaturday()) this.value = '';
+        if (this.value === getNextFriday()) this.value = '';
     });
     
     // Восстановление по умолчанию при потере фокуса
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     dateField.addEventListener('blur', function() {
-        if (!this.value) this.value = getNextSaturday();
+        if (!this.value) this.value = getNextFriday();
     });
 });
 </script>
