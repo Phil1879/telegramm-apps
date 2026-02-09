@@ -51,7 +51,7 @@
 function getNextFriday() {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    let daysUntilFriday = 5 - dayOfWeek;
+    let daysUntilFriday = 3 - dayOfWeek;
     if (daysUntilFriday < 0) daysUntilFriday += 7;
     
     const nextFriday = new Date(today);
