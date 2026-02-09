@@ -123,14 +123,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
       const data = {
-        bot: '@chat_admin_kazarian_bot',
-        task: 'admin',
+        bot: '@Bulanova_school_bot',
+        task: 'admin-zoom',
         user: tg.initDataUnsafe.user,
         answers: answers,
         status_msg: true
       };
 
-      fetch("https://n8n.psyhodoc.xyz/webhook/trans-club-admin", {
+      fetch("https://n8n.psyhodoc.xyz/webhook/school-grup-admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -146,13 +146,13 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(err => {
         console.error("❌ Ошибка:", err);
         const errorData = {
-          bot: '@chat_admin_kazarian_bot',
-          task: 'admin',
+          bot: '@Bulanova_school_bot',
+          task: 'admin-zoom',
           user: tg.initDataUnsafe.user,
           error: err.message,
           status_msg: false
         };
-        fetch("https://n8n.psyhodoc.xyz/webhook/trans-club-admin", {
+        fetch("https://n8n.psyhodoc.xyz/webhook/school-grup-admin", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(errorData),
