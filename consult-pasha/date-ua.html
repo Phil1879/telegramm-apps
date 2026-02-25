@@ -239,46 +239,40 @@
     // Викликаємо функцію після завантаження
     setupDateRestrictions();
 
-    function sendData() {
-      // собираем все поля
-    const dateField = document.getElementById('dateField');
-    const timeField = document.getElementById('timeField');
-    const fields = [dateField, timeField];
-    const answers = fields.map((field, index) => ({
-      field_name: field.previousElementSibling ? field.previousElementSibling.innerText : (index === 0 ? 'Виберіть дату' : 'Виберіть зручний час'),
-      answer: field.value.trim()
-    }));
-
-                // перевірка: всі поля заповнені
-        if (!dateField.value) {
-          tg.showAlert("Будь ласка, оберіть дату!");
-          dateField.focus();
-          return;
-        }
-        
-        if (!timeField.value) {
-          tg.showAlert("Будь ласка, оберіть час!");
+        function sendData() {
+      const dateField = document.getElementById('dateField');
+      const timeField = document.getElementById('timeField');
+      
+      // Перевірка: чи вибрана дата
+      if (!dateField.value) {
+        tg.showAlert("Будь ласка, оберіть дату!");
+        dateField.focus();
+        return;
+      }
+      
+      // Перевірка: чи вибраний час (поле видиме і має значення)
+      if (timeField.classList.contains('d-none') || !timeField.value) {
+        tg.showAlert("Будь ласка, оберіть час!");
+        if (!timeField.classList.contains('d-none')) {
           timeField.focus();
-          return;
         }
+        return;
+      }
 
-
-        // перевірка для select (щоб не було пустого значення)
-        if (timeField.value === "") {
-          tg.showAlert("Будь ласка, оберіть час!");
-          timeField.focus();
-          return;
-        }
-
+      // Формуємо дані для відправки
       const data = {
         bot: '@PavloKazarianBot',
-        task: 'GET',
-        sub: 'windows',
+        task: 'CREATE',
+        sub: 'appointment',
         user: tg.initDataUnsafe.user,
-        answers: answers,
+        date: dateField.value,
+        time: timeField.value,
         status_msg: true
       };
 
+      // Показуємо індикатор завантаження (опціонально)
+      tg.showAlert("Відправка даних...");
+      
       fetch("https://n8n.psyhodoc.xyz/webhook/kons-user-date", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -286,14 +280,28 @@
       })
       .then(res => {
         if (!res.ok) throw new Error("HTTP error " + res.status);
-        return res.text();
+        return res.json();
       })
       .then(result => {
-        console.log("✅ Успех:", result);
-        tg.close();
+        console.log("✅ Успіх:", result);
+        
+        if (result.status === "ok") {
+          // Показуємо успішне повідомлення
+          showAlert(result.allert?.text || "Запис створено успішно!", "ok", false);
+          // Закриваємо через 2 секунди
+          setTimeout(() => {
+            tg.close();
+          }, 2000);
+        } else {
+          // Показуємо помилку
+          showAlert(result.allert?.text || "Помилка при створенні запису", "error", true);
+        }
       })
       .catch(err => {
-        console.error("❌ Ошибка:", err);
+        console.error("❌ Помилка:", err);
+        showAlert("Помилка при відправці: " + err.message, "error", true);
+        
+        // Відправляємо помилку в лог
         const errorData = {
           bot: '@Bulanova_school_bot',
           task: 1,
@@ -302,7 +310,7 @@
           status_msg: false
         };
         fetch("https://n8n.psyhodoc.xyz/webhook/kons-user-new", {
-          method: "GET",
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(errorData),
         });
