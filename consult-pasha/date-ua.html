@@ -151,16 +151,39 @@
       
       // Встановлюємо мінімальну дату - сьогодні
       dateInput.min = `${yyyy}-${mm}-${dd}`;
-      
+            // Додаємо окремий обробник для очищення
+      dateInput.addEventListener('mousedown', function(e) {
+        // Запам'ятовуємо значення до кліку
+        const previousValue = this.value;
+        
+        // Перевіряємо через невеликий проміжок часу чи змінилося значення
+        setTimeout(() => {
+          if (this.value !== previousValue && !this.value) {
+            // Значення очистилося
+            document.getElementById('timeField').classList.add('d-none');
+            document.getElementById('customAlert').classList.add('d-none');
+          }
+        }, 20);
+      });
       // Додаємо обробник для блокування серед
       // Додаємо обробник для блокування серед та відправки запиту
-      dateInput.addEventListener('change', function() {
+      dateInput.addEventListener('input', function() {
+         if (!this.value) {
+          // Ховаємо вибір часу
+          document.getElementById('timeField').classList.add('d-none');
+          // Ховаємо алерт якщо він був показаний
+          document.getElementById('customAlert').classList.add('d-none');
+          return;
+        }
+
         const selectedDate = new Date(this.value);
         const dayOfWeek = selectedDate.getDay(); // 3 = середа
         
         if (dayOfWeek === 3) { // середа
           this.value = '';
           showAlert("Середи недоступні для запису. Будь ласка, оберіть інший день.", "error", true);
+          document.getElementById('timeField').classList.add('d-none');
+
           return;
         }
         
