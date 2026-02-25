@@ -16,6 +16,57 @@
       resize: none;
       overflow: auto;
     }
+        .question-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .answer-field {
+      height: 120px;
+      resize: none;
+      overflow: auto;
+    }
+    input[type="date"]::-webkit-datetime-edit-text,
+    input[type="date"]::-webkit-datetime-edit-month-field,
+    input[type="date"]::-webkit-datetime-edit-day-field,
+    input[type="date"]::-webkit-datetime-edit-year-field {
+      display: inline-block;
+      color: inherit;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      background: transparent;
+      bottom: 0;
+      color: transparent;
+      cursor: pointer;
+      height: auto;
+      left: auto;
+      right: 0;
+      position: absolute;
+      top: 0;
+      width: 30px;
+      z-index: 1;
+    }
+    
+    input[type="date"] {
+      position: relative;
+      text-align: left;
+      cursor: pointer;
+      padding-right: 35px;
+    }
+    
+    input[type="date"]:before {
+      content: attr(placeholder);
+      position: absolute;
+      left: 12px;
+      color: #6c757d;
+      z-index: 0;
+      pointer-events: none;
+      display: none;
+    }
+    
+    input[type="date"]:not(:valid):before {
+      display: block;
+    }
   </style>
 </head>
 <body class="bg-light">
@@ -24,15 +75,20 @@
 
 <div id="questions">
     <div class="mb-3">
-        <label for="q0" class="question-label">Ваше ім'я (як до вас звертатися)</label>
-        <textarea id="q0" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+        <label for="dateField" class="question-label">Виберіть дату</label>
+        <input type="date" id="dateField" class="form-control" placeholder="Оберіть дату" required style="text-align: center;">
     </div>
     <div class="mb-3">
-        <label for="q1" class="question-label">Номер телефону для зв'язук (у форматі +380xxxxxxxxx)</label>
-        <textarea id="q1" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+        <!-- <label for="timeField" class="question-label">Виберіть зручний час * вказано за часовим поясом Києва</label> -->
+        <select id="timeField" class="form-select d-none">
+          <option value="">Оберіть час...</option>
+        </select>
     </div>
 </div>
-
+<div id="customAlert" class="alert d-none" role="alert" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; min-width: 300px; text-align: center;">
+    <span id="alertMessage"></span>
+    <button id="alertCloseBtn" class="btn-close float-end" style="display: none;"></button>
+</div>
 
     <button class="btn btn-primary w-100" onclick="sendData()">Надіслати</button>
   </div>
@@ -44,35 +100,163 @@
     tg.ready();
     tg.expand();
 
+        function showAlert(message, type, persistent = false) {
+        const alertDiv = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('alertMessage');
+        const closeBtn = document.getElementById('alertCloseBtn');
+        
+        alertMessage.textContent = message;
+        alertDiv.classList.remove('d-none', 'alert-success', 'alert-danger');
+        
+        if (type === 'ok') {
+            alertDiv.classList.add('alert-success');
+        } else {
+            alertDiv.classList.add('alert-danger');
+        }
+        
+        if (persistent) {
+            closeBtn.style.display = 'inline-block';
+            closeBtn.onclick = function() {
+                alertDiv.classList.add('d-none');
+            };
+        } else {
+            closeBtn.style.display = 'none';
+            setTimeout(() => {
+                alertDiv.classList.add('d-none');
+            }, 5000);
+        }
+    }
+    
+    function updateTimeSelect(times) {
+        const timeSelect = document.getElementById('timeField');
+        timeSelect.innerHTML = '<option value="">Оберіть час...</option>';
+        
+        times.forEach(time => {
+            const option = document.createElement('option');
+            option.value = time;
+            option.textContent = time;
+            timeSelect.appendChild(option);
+        });
+        
+        timeSelect.classList.remove('d-none');
+    }
+
+    
+    function setupDateRestrictions() {
+      const dateInput = document.getElementById('dateField');
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      
+      // Встановлюємо мінімальну дату - сьогодні
+      dateInput.min = `${yyyy}-${mm}-${dd}`;
+      
+      // Додаємо обробник для блокування серед
+      // Додаємо обробник для блокування серед та відправки запиту
+      dateInput.addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        const dayOfWeek = selectedDate.getDay(); // 3 = середа
+        
+        if (dayOfWeek === 3) { // середа
+          this.value = '';
+          showAlert("Середи недоступні для запису. Будь ласка, оберіть інший день.", "error", true);
+          return;
+        }
+        
+        // Відправляємо запит з вибраною датою
+        const data = {
+          bot: '@PavloKazarianBot',
+          task: 'GET',
+          sub: 'windows',
+          user: tg.initDataUnsafe.user,
+          date: this.value,
+          status_msg: true
+        };
+        
+        fetch("https://n8n.psyhodoc.xyz/webhook/kons-user-date", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        })
+        .then(res => res.json())
+        .then(result => {
+          if (result.status === "ok") {
+            if (result.allert.type === "ok") {
+              // Показуємо тимчасовий алерт і оновлюємо час
+              showAlert(result.allert.text, "ok", false);
+              if (result.data && result.data.length > 0) {
+                updateTimeSelect(result.data);
+              }
+            } else {
+              // Показуємо персистентний алерт з кнопкою
+              showAlert(result.allert.text, "error", true);
+              // Ховаємо вибір часу якщо він був показаний
+              document.getElementById('timeField').classList.add('d-none');
+            }
+          } else {
+            showAlert("Помилка при отриманні даних", "error", true);
+          }
+        })
+        .catch(err => {
+          console.error("Помилка:", err);
+          showAlert("Помилка при отриманні даних", "error", true);
+        });
+      });
+      
+      // Додаємо обробник щоб відкривати календар при кліку на поле
+      dateInput.addEventListener('click', function(e) {
+        // Якщо клік не по іконці календаря, все одно відкриваємо календар
+        this.showPicker();
+      });
+      
+      // Встановлюємо початковий стан
+      dateInput.classList.add('interacted');
+    }
+    // Викликаємо функцію після завантаження
+    setupDateRestrictions();
+
     function sendData() {
       // собираем все поля
-      const fields = Array.from(document.querySelectorAll("textarea"));
-      const answers = fields.map((field, index) => ({
-        field_name: field.previousElementSibling.innerText,
-        answer: field.value.trim()
-      }));
+    const dateField = document.getElementById('dateField');
+    const timeField = document.getElementById('timeField');
+    const fields = [dateField, timeField];
+    const answers = fields.map((field, index) => ({
+      field_name: field.previousElementSibling ? field.previousElementSibling.innerText : (index === 0 ? 'Виберіть дату' : 'Виберіть зручний час'),
+      answer: field.value.trim()
+    }));
 
-        // проверка: все поля заполнены
-        const empty = answers.find(a => !a.answer);
-        if (empty) {
-        tg.showAlert("Будь ласка, заповніть усі поля перед відправкою!");
-        // ставим фокус на первое пустое поле
-        const firstEmptyField = fields.find(field => !field.value.trim());
-        if (firstEmptyField) firstEmptyField.focus();
-        return;
+                // перевірка: всі поля заповнені
+        if (!dateField.value) {
+          tg.showAlert("Будь ласка, оберіть дату!");
+          dateField.focus();
+          return;
+        }
+        
+        if (!timeField.value) {
+          tg.showAlert("Будь ласка, оберіть час!");
+          timeField.focus();
+          return;
         }
 
 
+        // перевірка для select (щоб не було пустого значення)
+        if (timeField.value === "") {
+          tg.showAlert("Будь ласка, оберіть час!");
+          timeField.focus();
+          return;
+        }
+
       const data = {
-        bot: '@Bulanova_school_bot',
-        task: 'date',
-        sub: 'insert',
+        bot: '@PavloKazarianBot',
+        task: 'GET',
+        sub: 'windows',
         user: tg.initDataUnsafe.user,
         answers: answers,
         status_msg: true
       };
 
-      fetch("https://n8n.psyhodoc.xyz/webhook/kons-user-new", {
+      fetch("https://n8n.psyhodoc.xyz/webhook/kons-user-date", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -95,7 +279,7 @@
           status_msg: false
         };
         fetch("https://n8n.psyhodoc.xyz/webhook/kons-user-new", {
-          method: "POST",
+          method: "GET",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(errorData),
         });
