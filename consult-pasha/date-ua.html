@@ -84,6 +84,10 @@
           <option value="">Оберіть час...</option>
         </select>
     </div>
+    <div class="mb-3 d-none" id="questionContainer">
+        <label for="questionField" class="question-label">Ваш запит на консультацію</label>
+        <textarea id="questionField" class="form-control" placeholder="Опишіть ваше питання..." rows="3"></textarea>
+    </div>
 </div>
 <div id="customAlert" class="alert d-none" role="alert" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; min-width: 300px; text-align: center;">
     <span id="alertMessage"></span>
@@ -139,6 +143,7 @@
         });
         
         timeSelect.classList.remove('d-none');
+        document.getElementById('questionContainer').classList.remove('d-none');
     }
 
     
@@ -242,6 +247,7 @@
         function sendData() {
       const dateField = document.getElementById('dateField');
       const timeField = document.getElementById('timeField');
+      const questionField = document.getElementById('questionField');
       
       // Перевірка: чи вибрана дата
       if (!dateField.value) {
@@ -258,6 +264,12 @@
         }
         return;
       }
+            // Перевірка: чи заповнене поле запиту (якщо воно видиме)
+      if (!questionField.classList.contains('d-none') && !questionField.value.trim()) {
+        tg.showAlert("Будь ласка, опишіть ваш запит!");
+        questionField.focus();
+        return;
+      }
 
       // Формуємо дані для відправки
       const data = {
@@ -267,6 +279,7 @@
         user: tg.initDataUnsafe.user,
         date: dateField.value,
         time: timeField.value,
+        question: questionField.value.trim(),
         status_msg: true
       };
 
