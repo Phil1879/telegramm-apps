@@ -65,9 +65,12 @@
         answer: field.value.trim()
       }));
 
-      const empty = answers.find(a => !a.answer);
-      if (empty) {
-        tg.showAlert("Будь ласка, заповніть усі поля перед відправкою!");
+    
+      const requiredIndexes = [0, 1, 2, 3];
+      const emptyRequired = requiredIndexes.some(idx => !fields[idx]?.value.trim());
+      
+      if (emptyRequired) {
+        tg.showAlert("Будь ласка, заповніть усі обов'язкові поля перед відправкою!");
         const firstEmptyField = fields.find(field => !field.value.trim());
         if (firstEmptyField) firstEmptyField.focus();
         return;
