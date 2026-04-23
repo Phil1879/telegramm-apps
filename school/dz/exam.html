@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ШНС_15</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .question-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .answer-field {
+      height: 120px;
+      resize: none;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container py-3">
+    <h1 class="mb-4 text-center">Підсумковий тест</h1>
+
+Ось новий блок з усіма 30 питаннями (текстові + з варіантами відповідей, де кожне питання має радіокнопки для вибору одного варіанту):
+
+```html
+<div id="questions">
+    <!-- 1 -->
+    <div class="mb-3">
+        <label class="question-label">1. Що запускає співзалежний патерн поведінки?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q1" value="Ситуація"> <label>Ситуація</label></div>
+            <div class="radio-option"><input type="radio" name="q1" value="Поведінка"> <label>Поведінка</label></div>
+            <div class="radio-option"><input type="radio" name="q1" value="Тригер"> <label>Тригер</label></div>
+            <div class="radio-option"><input type="radio" name="q1" value="Настрій"> <label>Настрій</label></div>
+        </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="mb-3">
+        <label class="question-label">2. Що з наведеного точніше описує поняття «співзалежність»?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q2" value="Потреба контролювати інших"> <label>Потреба контролювати інших</label></div>
+            <div class="radio-option"><input type="radio" name="q2" value="Нездатність будувати стосунки"> <label>Нездатність будувати стосунки</label></div>
+            <div class="radio-option"><input type="radio" name="q2" value="Залежність від наркотиків/алкоголю"> <label>Залежність від наркотиків/алкоголю</label></div>
+            <div class="radio-option"><input type="radio" name="q2" value="Емоційна залежність, втрата особистих меж"> <label>Емоційна залежність, втрата особистих меж</label></div>
+        </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="mb-3">
+        <label class="question-label">3. Яка з наведених рис є типовою для співзалежної особи?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q3" value="Високий рівень автономії"> <label>Високий рівень автономії</label></div>
+            <div class="radio-option"><input type="radio" name="q3" value="Уникання близьких стосунків"> <label>Уникання близьких стосунків</label></div>
+            <div class="radio-option"><input type="radio" name="q3" value="Постійна потреба догоджати іншим, нехтуючи собою"> <label>Постійна потреба догоджати іншим, нехтуючи собою</label></div>
+            <div class="radio-option"><input type="radio" name="q3" value="Низькій рівень емпатії"> <label>Низькій рівень емпатії</label></div>
+        </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="mb-3">
+        <label class="question-label">4. Який механізм захисту найчастіше використовується у співзалежних стосунках?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q4" value="Раціоналізація"> <label>Раціоналізація</label></div>
+            <div class="radio-option"><input type="radio" name="q4" value="Проекція"> <label>Проекція</label></div>
+            <div class="radio-option"><input type="radio" name="q4" value="Ідентифікація"> <label>Ідентифікація</label></div>
+            <div class="radio-option"><input type="radio" name="q4" value="Заперечення"> <label>Заперечення</label></div>
+        </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="mb-3">
+        <label class="question-label">5. Що з наведеного є прикладом здорової межі у стосунках?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q5" value="Відверто говорити про свої почуття і потреби"> <label>Відверто говорити про свої почуття і потреби</label></div>
+            <div class="radio-option"><input type="radio" name="q5" value="Контролювати поведінку близької людини"> <label>Контролювати поведінку близької людини</label></div>
+            <div class="radio-option"><input type="radio" name="q5" value="Завжди погоджуватися з близькою людиною"> <label>Завжди погоджуватися з близькою людиною</label></div>
+            <div class="radio-option"><input type="radio" name="q5" value="Відмовлятися від власних інтересів заради миру"> <label>Відмовлятися від власних інтересів заради миру</label></div>
+        </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="mb-3">
+        <label class="question-label">6. Яка роль частіше формується у співзалежних стосунках?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q6" value="Нейтральний партнер"> <label>Нейтральний партнер</label></div>
+            <div class="radio-option"><input type="radio" name="q6" value="Рятівник"> <label>Рятівник</label></div>
+            <div class="radio-option"><input type="radio" name="q6" value="Спостерігач"> <label>Спостерігач</label></div>
+            <div class="radio-option"><input type="radio" name="q6" value="Критик"> <label>Критик</label></div>
+        </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="mb-3">
+        <label class="question-label">7. Що з наведеного є НЕ ефективною стратегію подолання співзалежності?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q7" value="Ізоляція від усіх стосунків"> <label>Ізоляція від усіх стосунків</label></div>
+            <div class="radio-option"><input type="radio" name="q7" value="Навчання встановлення меж"> <label>Навчання встановлення меж</label></div>
+            <div class="radio-option"><input type="radio" name="q7" value="Підвищення усвідомлення власних потреб"> <label>Підвищення усвідомлення власних потреб</label></div>
+            <div class="radio-option"><input type="radio" name="q7" value="Робота з психологом"> <label>Робота з психологом</label></div>
+        </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="mb-3">
+        <label class="question-label">8. Яке твердження найкраще описує відмінність любові від співзалежності?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q8" value="Співзалежність-це форма глибокої любові"> <label>Співзалежність-це форма глибокої любові</label></div>
+            <div class="radio-option"><input type="radio" name="q8" value="У любові не має меж"> <label>У любові не має меж</label></div>
+            <div class="radio-option"><input type="radio" name="q8" value="Любов - це завжди жертва"> <label>Любов - це завжди жертва</label></div>
+            <div class="radio-option"><input type="radio" name="q8" value="Любов базується на свободі, а співзалежність на контролі"> <label>Любов базується на свободі, а співзалежність на контролі</label></div>
+        </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="mb-3">
+        <label class="question-label">9. Який емоційний стан частіше супроводжує співзалежність?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q9" value="Незалежність"> <label>Незалежність</label></div>
+            <div class="radio-option"><input type="radio" name="q9" value="Тривога"> <label>Тривога</label></div>
+            <div class="radio-option"><input type="radio" name="q9" value="Впевненість"> <label>Впевненість</label></div>
+            <div class="radio-option"><input type="radio" name="q9" value="Сум"> <label>Сум</label></div>
+        </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="mb-3">
+        <label class="question-label">10. Що є першим кроком для подолання співзалежності?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q10" value="Ігнорування емоцій"> <label>Ігнорування емоцій</label></div>
+            <div class="radio-option"><input type="radio" name="q10" value="Звинувачення інших"> <label>Звинувачення інших</label></div>
+            <div class="radio-option"><input type="radio" name="q10" value="Зміна партнера/ відчуження від близької людини"> <label>Зміна партнера/ відчуження від близької людини</label></div>
+            <div class="radio-option"><input type="radio" name="q10" value="Визнання проблеми"> <label>Визнання проблеми</label></div>
+        </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="mb-3">
+        <label class="question-label">11. Яке з тверджень є прикладом співзалежного мислення?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q11" value="Я відповідальний лише за свої почуття"> <label>Я відповідальний лише за свої почуття</label></div>
+            <div class="radio-option"><input type="radio" name="q11" value="Я маю право на власні межі"> <label>Я маю право на власні межі</label></div>
+            <div class="radio-option"><input type="radio" name="q11" value="Я можу відмовити без почуття провини"> <label>Я можу відмовити без почуття провини</label></div>
+            <div class="radio-option"><input type="radio" name="q11" value="Я не можу бути щасливим, якщо моя близька людина нещаслива"> <label>Я не можу бути щасливим, якщо моя близька людина нещаслива</label></div>
+        </div>
+    </div>
+
+    <!-- 12 -->
+    <div class="mb-3">
+        <label class="question-label">12. Що з наведеного є здоровим прикладом підтримки близької людини?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q12" value="Підтримувати не беручи відповідальність за її життя"> <label>Підтримувати не беручи відповідальність за її життя</label></div>
+            <div class="radio-option"><input type="radio" name="q12" value="Ігнорувати її проблеми"> <label>Ігнорувати її проблеми</label></div>
+            <div class="radio-option"><input type="radio" name="q12" value="Робити все замість неї"> <label>Робити все замість неї</label></div>
+            <div class="radio-option"><input type="radio" name="q12" value="Контролювати її рішення"> <label>Контролювати її рішення</label></div>
+        </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="mb-3">
+        <label class="question-label">13. Який із наведених висловів найкраще ілюструє співзалежність?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q13" value="Я довіряю собі"> <label>Я довіряю собі</label></div>
+            <div class="radio-option"><input type="radio" name="q13" value="Я ціную свої потреби"> <label>Я ціную свої потреби</label></div>
+            <div class="radio-option"><input type="radio" name="q13" value="Я не можу жити без нього/неї"> <label>Я не можу жити без нього/неї</label></div>
+            <div class="radio-option"><input type="radio" name="q13" value="Я відповідальний за своє життя"> <label>Я відповідальний за своє життя</label></div>
+        </div>
+    </div>
+
+    <!-- 14 -->
+    <div class="mb-3">
+        <label class="question-label">14. Яка з наведених навичок допомагає подолати співзалежність?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q14" value="Контроль"> <label>Контроль</label></div>
+            <div class="radio-option"><input type="radio" name="q14" value="Ассертивність"> <label>Ассертивність</label></div>
+            <div class="radio-option"><input type="radio" name="q14" value="Покірність"> <label>Покірність</label></div>
+            <div class="radio-option"><input type="radio" name="q14" value="Маніпуляція"> <label>Маніпуляція</label></div>
+        </div>
+    </div>
+
+    <!-- 15 -->
+    <div class="mb-3">
+        <label class="question-label">15. Що з наведеного є прикладом не здорової межі?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q15" value="Відмова від токсичних стосунків"> <label>Відмова від токсичних стосунків</label></div>
+            <div class="radio-option"><input type="radio" name="q15" value="Ігнорування власних потреб"> <label>Ігнорування власних потреб</label></div>
+            <div class="radio-option"><input type="radio" name="q15" value="Встановлення часу для себе"> <label>Встановлення часу для себе</label></div>
+            <div class="radio-option"><input type="radio" name="q15" value="Відверта розмова про емоції"> <label>Відверта розмова про емоції</label></div>
+        </div>
+    </div>
+
+    <!-- 16 -->
+    <div class="mb-3">
+        <label class="question-label">16. Ситуація: "Він/вона знову зірвався". Після тижня тверезості знову вжив, хоча обіцяв(ла), що цього не буде</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q16" value="Я мовчу бо не хочу сварки"> <label>Я мовчу бо не хочу сварки</label></div>
+            <div class="radio-option"><input type="radio" name="q16" value="Роблю вид, що нічого не сталося"> <label>Роблю вид, що нічого не сталося</label></div>
+            <div class="radio-option"><input type="radio" name="q16" value="Я скажу, що мені боляче і запропоную звернутися за допомогою"> <label>Я скажу, що мені боляче і запропоную звернутися за допомогою</label></div>
+            <div class="radio-option"><input type="radio" name="q16" value="Я сварюсь, але потім пропоную повечеряти, щоб залагодити сварку"> <label>Я сварюсь, але потім пропоную повечеряти, щоб залагодити сварку</label></div>
+        </div>
+    </div>
+
+    <!-- 17 -->
+    <div class="mb-3">
+        <label class="question-label">17. Ситуація: «Він каже, що все контролює». Моя близька людина вживає наркотики, але каже, що може зупинитися будь коли</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q17" value="Я вірю і не втручаюся"> <label>Я вірю і не втручаюся</label></div>
+            <div class="radio-option"><input type="radio" name="q17" value="Я даю гроші, бо він/вона обіцяє, що це в останній раз"> <label>Я даю гроші, бо він/вона обіцяє, що це в останній раз</label></div>
+            <div class="radio-option"><input type="radio" name="q17" value="Скажу, що хвилююся і допоможу з лікуванням, якщо він/вона цього попросить"> <label>Скажу, що хвилююся і допоможу з лікуванням, якщо він/вона цього попросить</label></div>
+            <div class="radio-option"><input type="radio" name="q17" value="Я сварюся, але потім відчуваю провину"> <label>Я сварюся, але потім відчуваю провину</label></div>
+        </div>
+    </div>
+
+    <!-- 18 -->
+    <div class="mb-3">
+        <label class="question-label">18. Ситуація: Моя близька людина зловживає алкоголем, але я не можу її покинути - він/вона без мене пропаде</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q18" value="Я приховую його/ її поведінку від всіх"> <label>Я приховую його/ її поведінку від всіх</label></div>
+            <div class="radio-option"><input type="radio" name="q18" value="Я вірю що моя любов все змінить"> <label>Я вірю що моя любов все змінить</label></div>
+            <div class="radio-option"><input type="radio" name="q18" value="Я звертаюся по допомогу і починаю працювати над собою"> <label>Я звертаюся по допомогу і починаю працювати над собою</label></div>
+            <div class="radio-option"><input type="radio" name="q18" value="Терплю, тому що не хочу щоб він/вона залишалася сама"> <label>Терплю, тому що не хочу щоб він/вона залишалася сама</label></div>
+        </div>
+    </div>
+
+    <!-- 19 -->
+    <div class="mb-3">
+        <label class="question-label">19. Моя доросла дитина зловживає наркотиками/алкоголем, не працює, я щодня вирішую її проблеми</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q19" value="Я даю гроші, щоб було менше нервів"> <label>Я даю гроші, щоб було менше нервів</label></div>
+            <div class="radio-option"><input type="radio" name="q19" value="Пояснюю, що люблю, але не беру більше відповідальності за дорослу свою дитину"> <label>Пояснюю, що люблю, але не беру більше відповідальності за дорослу свою дитину</label></div>
+            <div class="radio-option"><input type="radio" name="q19" value="Терплю, бо це ж моя дитина"> <label>Терплю, бо це ж моя дитина</label></div>
+        </div>
+    </div>
+
+    <!-- 20 -->
+    <div class="mb-3">
+        <label class="question-label">20. Після сварки з близькою людиною, яка мене принижувала, відчуваю, що це моя провина</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q20" value="Намагаюсь задобрити, згладжую ситуацію"> <label>Намагаюсь задобрити, згладжую ситуацію</label></div>
+            <div class="radio-option"><input type="radio" name="q20" value="Думаю, що не заслуговую на краще"> <label>Думаю, що не заслуговую на краще</label></div>
+            <div class="radio-option"><input type="radio" name="q20" value="Розумію, що маю право на повагу і не повинна таке терпіти"> <label>Розумію, що маю право на повагу і не повинна таке терпіти</label></div>
+            <div class="radio-option"><input type="radio" name="q20" value="Мовчу, щоб не погіршити ситуацію"> <label>Мовчу, щоб не погіршити ситуацію</label></div>
+        </div>
+    </div>
+
+    <!-- 21 -->
+    <div class="mb-3">
+        <label class="question-label">21. Який нейромедіатор відповідає за отримання задоволення?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q21" value="Окситоцин"> <label>Окситоцин</label></div>
+            <div class="radio-option"><input type="radio" name="q21" value="Норадреналін"> <label>Норадреналін</label></div>
+            <div class="radio-option"><input type="radio" name="q21" value="Серотонін"> <label>Серотонін</label></div>
+            <div class="radio-option"><input type="radio" name="q21" value="Дофамін"> <label>Дофамін</label></div>
+        </div>
+    </div>
+
+    <!-- 22 -->
+    <div class="mb-3">
+        <label class="question-label">22. Що таке «вторинна вигода»?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q22" value="Це свідоме бажання людини змінити своє життя на краще"> <label>Це свідоме бажання людини змінити своє життя на краще</label></div>
+            <div class="radio-option"><input type="radio" name="q22" value="Це винагорода або прихована користь, яку людина отримує від своєї проблемної поведінки або стану"> <label>Це винагорода або прихована користь, яку людина отримує від своєї проблемної поведінки або стану</label></div>
+            <div class="radio-option"><input type="radio" name="q22" value="Це спосіб уникнути відповідальності за власні рішення через маніпуляцію іншими"> <label>Це спосіб уникнути відповідальності за власні рішення через маніпуляцію іншими</label></div>
+            <div class="radio-option"><input type="radio" name="q22" value="Це прагнення допомагати іншим навіть на шкоду собі"> <label>Це прагнення допомагати іншим навіть на шкоду собі</label></div>
+        </div>
+    </div>
+
+    <!-- 23 -->
+    <div class="mb-3">
+        <label class="question-label">23. Близька людина говорить: «Ти мене ігноруєш, не поважаєш, не цінуєш». Дайте асертивну відповідь в «Я-повідомлені»</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q23" value="Це все через тебе, я втомився(ся)"> <label>Це все через тебе, я втомився(ся)</label></div>
+            <div class="radio-option"><input type="radio" name="q23" value="Вибач , я винен(на), я все зіпсувала"> <label>Вибач , я винен(на), я все зіпсувала</label></div>
+            <div class="radio-option"><input type="radio" name="q23" value="Я бачу, що тобі боляче, давай це обговоримо спокійно"> <label>Я бачу, що тобі боляче, давай це обговоримо спокійно</label></div>
+            <div class="radio-option"><input type="radio" name="q23" value="Якщо тобі щось не подобається - йди"> <label>Якщо тобі щось не подобається - йди</label></div>
+            <div class="radio-option"><input type="radio" name="q23" value="Ти спеціально мене дратуєш?"> <label>Ти спеціально мене дратуєш?</label></div>
+        </div>
+    </div>
+
+    <!-- 24 -->
+    <div class="mb-3">
+        <label class="question-label">24. Замініть вислів на асертивну форму виразу «Ти завжди поводиш себе так, щоб вивести мене з себе»</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q24" value="Мені здається, що ти знову хочеш мене розізлити"> <label>Мені здається, що ти знову хочеш мене розізлити</label></div>
+            <div class="radio-option"><input type="radio" name="q24" value="Я злюсь, коли мене перебивають, мені важливо, щоб мене дослухали"> <label>Я злюсь, коли мене перебивають, мені важливо, щоб мене дослухали</label></div>
+            <div class="radio-option"><input type="radio" name="q24" value="Ти просто не вмієш нормально спілкуватися"> <label>Ти просто не вмієш нормально спілкуватися</label></div>
+        </div>
+    </div>
+
+    <!-- 25 -->
+    <div class="mb-3">
+        <label class="question-label">25. Змініть вислів на асертивну форму виразу «Через тебе я знову запізнився(ся)!»</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q25" value="Ти завжди все робиш повільно, тому я не встигаю"> <label>Ти завжди все робиш повільно, тому я не встигаю</label></div>
+            <div class="radio-option"><input type="radio" name="q25" value="Ти винен(винна), що я не встиг(ла)"> <label>Ти винен(винна), що я не встиг(ла)</label></div>
+            <div class="radio-option"><input type="radio" name="q25" value="Мені набридло, що я через тебе постійно запізнююсь"> <label>Мені набридло, що я через тебе постійно запізнююсь</label></div>
+            <div class="radio-option"><input type="radio" name="q25" value="Мені потрібно було вийти раніше, я не розрахувала час"> <label>Мені потрібно було вийти раніше, я не розрахувала час</label></div>
+        </div>
+    </div>
+
+    <!-- 26 -->
+    <div class="mb-3">
+        <label class="question-label">26. Ситуація: У Олени є брат Петро, він залежний, живе в домі сестри. Олена намагається допомогти брату. У Олени є чоловік Микола, він відсторонився від ситуації через образу на Олену. Мама Олени вимагає не кидати її брата, давлячи на почуття провини. Хто в якій ролі знаходиться за трикутником Карпмана?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q26" value="Олена - переслідувач, Петро- герой, Микола- спостерігач"> <label>Олена - переслідувач, Петро- герой, Микола- спостерігач</label></div>
+            <div class="radio-option"><input type="radio" name="q26" value="Олена- жертва, Петро-переслідувач, Микола-рятівник, мама- спостерігач"> <label>Олена- жертва, Петро-переслідувач, Микола-рятівник, мама- спостерігач</label></div>
+            <div class="radio-option"><input type="radio" name="q26" value="Немає жодного трикутника- це родина"> <label>Немає жодного трикутника- це родина</label></div>
+            <div class="radio-option"><input type="radio" name="q26" value="Олена-рятівниця, Петро- жертва, Микола - жертва, мама - агресор"> <label>Олена-рятівниця, Петро- жертва, Микола - жертва, мама - агресор</label></div>
+        </div>
+    </div>
+
+    <!-- 27 -->
+    <div class="mb-3">
+        <label class="question-label">27. Попередня історія: яка відповідальність Олени була б доречнішою?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q27" value="За поведінку брата, бо вона його сестра"> <label>За поведінку брата, бо вона його сестра</label></div>
+            <div class="radio-option"><input type="radio" name="q27" value="За почуття мами, щоб її не образити"> <label>За почуття мами, щоб її не образити</label></div>
+            <div class="radio-option"><input type="radio" name="q27" value="За власні рішення, межі, добробут в сімʼї"> <label>За власні рішення, межі, добробут в сімʼї</label></div>
+            <div class="radio-option"><input type="radio" name="q27" value="За те, щоб усі були щасливі"> <label>За те, щоб усі були щасливі</label></div>
+        </div>
+    </div>
+
+    <!-- 28 -->
+    <div class="mb-3">
+        <label class="question-label">28. Попередня історія: яка б відповідальність брата Петра була б доречнішою?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q28" value="За те, щоб Олена не нервувала"> <label>За те, щоб Олена не нервувала</label></div>
+            <div class="radio-option"><input type="radio" name="q28" value="За збереження сімейної гармонії"> <label>За збереження сімейної гармонії</label></div>
+            <div class="radio-option"><input type="radio" name="q28" value="За щастя мами"> <label>За щастя мами</label></div>
+            <div class="radio-option"><input type="radio" name="q28" value="За свої вчинки і їх наслідки"> <label>За свої вчинки і їх наслідки</label></div>
+        </div>
+    </div>
+
+    <!-- 29 -->
+    <div class="mb-3">
+        <label class="question-label">29. Попередня історія: яка б відповідальність Миколи, чоловіка Олени була б доречнішою?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q29" value="За те, щоб не ображати дружину, навіть, якщо йому зле"> <label>За те, щоб не ображати дружину, навіть, якщо йому зле</label></div>
+            <div class="radio-option"><input type="radio" name="q29" value="Підтримувати Петра, бо він родич"> <label>Підтримувати Петра, бо він родич</label></div>
+            <div class="radio-option"><input type="radio" name="q29" value="За свої почуття і чесну комунікацію з дружиною"> <label>За свої почуття і чесну комунікацію з дружиною</label></div>
+            <div class="radio-option"><input type="radio" name="q29" value="Не втручатися в сімейні справи Олени"> <label>Не втручатися в сімейні справи Олени</label></div>
+        </div>
+    </div>
+
+    <!-- 30 -->
+    <div class="mb-3">
+        <label class="question-label">30. Попередня історія: яка б відповідальність мами Олени і Петра була б доречнішою?</label>
+        <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q30" value="За те, щоб контролювати життя дітей"> <label>За те, щоб контролювати життя дітей</label></div>
+            <div class="radio-option"><input type="radio" name="q30" value="За почуття провини Олени"> <label>За почуття провини Олени</label></div>
+            <div class="radio-option"><input type="radio" name="q30" value="За власні емоції і те, щоб не перекладати відповідальність на доньку"> <label>За власні емоції і те, щоб не перекладати відповідальність на доньку</label></div>
+            <div class="radio-option"><input type="radio" name="q30" value="За те, щоб Олена не кидала брата"> <label>За те, щоб Олена не кидала брата</label></div>
+        </div>
+    </div>
+        <!-- 31 -->
+    <div class="mb-3">
+        <label for="q31" class="question-label">31. Напишіть, будь ласка, відгук про навчання в «Школі незалежної сімʼї» імені Олени Буланової. Чим корисне було для вас навчання? Які нові навички ви опанували? Як це може повпливати на ваше подальше життя?</label>
+        <textarea id="q31" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+    </div>
+
+    <!-- 32 -->
+    <div class="mb-3">
+        <label for="q32" class="question-label">32. Напишіть, будь ласка, ваші пропозиції і побажання, що ще б ви хотіли додати в навчальний процес школи. Ваша думка важлива і вона допоможе нам вдосконалюватися.</label>
+        <textarea id="q32" class="form-control answer-field" placeholder="Ваша відповідь..." required></textarea>
+    </div>
+</div>
+  <!-- Telegram SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    function sendData() {
+      // Збираємо всі текстові поля (textarea)
+      const textareas = Array.from(document.querySelectorAll("#questions textarea"));
+      const textAnswers = textareas.map((field, index) => ({
+        field_name: field.previousElementSibling.innerText,
+        answer: field.value.trim(),
+        type: "textarea"
+      }));
+
+      // Збираємо всі радіокнопки (вибрані варіанти)
+      const allRadios = document.querySelectorAll("#questions input[type='radio']");
+      const radioGroups = new Map();
+      
+      allRadios.forEach(radio => {
+        const name = radio.name;
+        if (radio.checked) {
+          radioGroups.set(name, radio.value);
+        }
+      });
+      
+      const radioAnswers = Array.from(radioGroups.entries()).map(([name, value]) => {
+        // Знаходимо текст питання (label перед radio-group)
+        const questionDiv = document.querySelector(`input[name="${name}"]`).closest('.mb-3');
+        const questionLabel = questionDiv.querySelector('.question-label');
+        const field_name = questionLabel ? questionLabel.innerText : name;
+        return {
+          field_name: field_name,
+          answer: value,
+          type: "radio"
+        };
+      });
+
+      // Об'єднуємо всі відповіді
+      const allAnswers = [...textAnswers, ...radioAnswers];
+
+      // Перевіряємо чи всі текстові поля заповнені
+      const emptyTextarea = textAnswers.find(a => !a.answer);
+      if (emptyTextarea) {
+        tg.showAlert("Будь ласка, заповніть усі текстові поля перед відправкою!");
+        const firstEmptyField = textareas.find(field => !field.value.trim());
+        if (firstEmptyField) firstEmptyField.focus();
+        return;
+      }
+
+      // Перевіряємо чи всі радіо питання мають відповідь (від 1 до 30)
+      const totalRadioQuestions = 30;
+      if (radioAnswers.length !== totalRadioQuestions) {
+        tg.showAlert(`Будь ласка, дайте відповідь на всі ${totalRadioQuestions} запитань з варіантами відповідей!`);
+        return;
+      }
+
+      const data = {
+        bot: '@Bulanova_school_bot',
+        task: 20,
+        sub: 0,
+        user: tg.initDataUnsafe.user,
+        answers: allAnswers,
+        status_msg: true
+      };
+
+      fetch("https://n8n.psyhodoc.xyz/webhook/school-dz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.text();
+      })
+      .then(result => {
+        console.log("✅ Успех:", result);
+        tg.close();
+      })
+      .catch(err => {
+        console.error("❌ Ошибка:", err);
+        const errorData = {
+          bot: '@Bulanova_school_bot',
+          task: 20,
+          user: tg.initDataUnsafe.user,
+          error: err.message,
+          status_msg: false
+        };
+        fetch("https://n8n.psyhodoc.xyz/webhook/school-dz", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(errorData),
+        });
+      });
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
