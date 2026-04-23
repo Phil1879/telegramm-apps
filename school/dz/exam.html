@@ -418,7 +418,7 @@
     `;
     document.head.appendChild(styleFix);
 
-    function sendData() {
+        function sendData() {
       // Збираємо всі текстові поля (textarea)
       const textareas = Array.from(document.querySelectorAll("#questions textarea"));
       const textAnswers = textareas.map((field, index) => ({
@@ -427,47 +427,63 @@
         type: "textarea"
       }));
 
-      // Збираємо всі радіокнопки (вибрані варіанти)
-      const allRadios = document.querySelectorAll("#questions input[type='radio']");
-      const radioGroups = new Map();
-      
-      allRadios.forEach(radio => {
-        const name = radio.name;
-        if (radio.checked) {
-          radioGroups.set(name, radio.value);
-        }
-      });
-      
-      const radioAnswers = Array.from(radioGroups.entries()).map(([name, value]) => {
-        // Знаходимо текст питання (label перед radio-group)
-        const questionDiv = document.querySelector(`input[name="${name}"]`).closest('.mb-3');
-        const questionLabel = questionDiv.querySelector('.question-label');
-        const field_name = questionLabel ? questionLabel.innerText : name;
-        return {
-          field_name: field_name,
-          answer: value,
-          type: "radio"
-        };
-      });
-
-      // Об'єднуємо всі відповіді
-      const allAnswers = [...textAnswers, ...radioAnswers];
-
-      // Перевіряємо чи всі текстові поля заповнені
-      const emptyTextarea = textAnswers.find(a => !a.answer);
-      if (emptyTextarea) {
+      // Перевіряємо текстові поля
+      const emptyTextareaIndex = textareas.findIndex(field => !field.value.trim());
+      if (emptyTextareaIndex !== -1) {
         tg.showAlert("Будь ласка, заповніть усі текстові поля перед відправкою!");
-        const firstEmptyField = textareas.find(field => !field.value.trim());
-        if (firstEmptyField) firstEmptyField.focus();
+        textareas[emptyTextareaIndex].focus();
+        textareas[emptyTextareaIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
 
-      // Перевіряємо чи всі радіо питання мають відповідь (від 1 до 30)
-      const totalRadioQuestions = 30;
-      if (radioAnswers.length !== totalRadioQuestions) {
-        tg.showAlert(`Будь ласка, дайте відповідь на всі ${totalRadioQuestions} запитань з варіантами відповідей!`);
+      // Збираємо всі радіо питання по порядку (від q1 до q30)
+      const radioQuestions = [];
+      for (let i = 1; i <= 30; i++) {
+        const radioName = `q${i}`;
+        const radioGroup = document.querySelectorAll(`input[name="${radioName}"]`);
+        if (radioGroup.length > 0) {
+          let selectedValue = null;
+          let selectedIndex = null;
+          radioGroup.forEach((radio, idx) => {
+            if (radio.checked) {
+              selectedValue = radio.value;
+              selectedIndex = idx + 1;
+            }
+          });
+          
+          const questionDiv = document.querySelector(`input[name="${radioName}"]`).closest('.mb-3');
+          const questionLabel = questionDiv.querySelector('.question-label');
+          const field_name = questionLabel ? questionLabel.innerText : radioName;
+          
+          radioQuestions.push({
+            field_name: field_name,
+            answer: selectedValue,
+            answer_number: selectedIndex,
+            type: "radio",
+            name: radioName,
+            element: questionDiv
+          });
+        }
+      }
+
+      // Перевіряємо чи всі радіо питання мають відповідь
+      const emptyRadioIndex = radioQuestions.findIndex(q => q.answer === null);
+      if (emptyRadioIndex !== -1) {
+        const emptyQuestion = radioQuestions[emptyRadioIndex];
+        tg.showAlert(`Будь ласка, дайте відповідь на питання №${emptyRadioIndex + 1}`);
+        emptyQuestion.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const firstRadio = emptyQuestion.element.querySelector('input[type="radio"]');
+        if (firstRadio) firstRadio.focus();
         return;
       }
+
+      // Формуємо відповіді
+      const allAnswers = [...textAnswers, ...radioQuestions.map(({ field_name, answer, answer_number, type }) => ({
+        field_name: field_name,
+        answer: answer,
+        answer_number: answer_number,
+        type: type
+      }))];
 
       const data = {
         bot: '@Bulanova_school_bot',
