@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест WebApp</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            background: #f0f2f5;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #006699;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">Загрузка...</h1>
+        <textarea id="userInput" rows="4" placeholder=""></textarea>
+        <button onclick="sendData()">Отправить</button>
+        <div id="response" class="response"></div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // Получаем параметр lang из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const lang = urlParams.get('lang'); // 'ru' или 'uk'
+
+        // Устанавливаем заголовок и плейсхолдер в зависимости от языка
+        const title = document.getElementById('title');
+        const inputField = document.getElementById('userInput');
+
+        if (lang === 'uk') {
+            title.textContent = 'Привіт! 👋';
+            inputField.placeholder = 'Введіть відповідь...';
+        } else {
+            title.textContent = 'Привет! 👋';
+            inputField.placeholder = 'Введите ответ...';
+        }
+
+        // Функция отправки на вебхук
+        async function sendData() {
+            const userText = document.getElementById('userInput').value;
+            const responseDiv = document.getElementById('response');
+            
+            // Проверяем, что текст введен
+            if (!userText.trim()) {
+                tg.showAlert(lang === 'uk' ? 'Введіть відповідь!' : 'Введите ответ!');
+                return;
+            }
+
+            // Формируем данные для отправки (как в вашем примере)
+            const data = {
+                bot: '@PavloKazarianBot',
+                task: 'TEST',
+                sub: 'webapp_test',
+                user: tg.initDataUnsafe.user,
+                answer: userText,
+                lang: lang,
+                status_msg: true
+            };
+
+            // Показываем статус отправки
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '⏳ Отправка...';
+            responseDiv.style.background = '#fff3cd';
+            responseDiv.style.color = '#856404';
+
+            try {
+                // ВАЖНО: Замените URL на ваш реальный вебхук в n8n
+                const webhookUrl = 'https://n8n.psyhodoc.xyz/webhook/test-simple';
+                
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                // Показываем успешный ответ
+                responseDiv.innerHTML = '✅ Отправлено успешно!';
+                responseDiv.style.background = '#d4edda';
+                responseDiv.style.color = '#155724';
+                
+                console.log('Ответ от сервера:', result);
+                
+                // Через 2 секунды скрываем
+                setTimeout(() => {
+                    responseDiv.style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                // Показываем ошибку
+                responseDiv.innerHTML = '❌ Ошибка: ' + error.message;
+                responseDiv.style.background = '#f8d7da';
+                responseDiv.style.color = '#721c24';
+                
+                console.error('Ошибка:', error);
+            }
+        }
+    </script>
+</body>
+</html>
