@@ -203,7 +203,7 @@
     
     function updateTimeSelect(times) {
         const timeSelect = document.getElementById('timeField');
-        timeSelect.innerHTML = '<option value="">${t.timePlaceholder}</option>';
+        timeSelect.innerHTML = `<option value="">${t.timePlaceholder}</option>`;
         
         times.forEach(time => {
             const option = document.createElement('option');
