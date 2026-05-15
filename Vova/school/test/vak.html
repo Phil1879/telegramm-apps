@@ -455,7 +455,7 @@
         </div>
     </div>
 </div>
-    <button class="btn btn-primary w-100" onclick="sendData()">Надіслати</button>
+    <button class="btn btn-primary w-100" onclick="sendData()">Получить результат</button>
   <!-- Telegram SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
@@ -579,8 +579,8 @@
 
       const data = {
         bot: '@Stikhanov_NLP_School_bot',
-        task: "test_vak",
-        sub: 0,
+        task: 301,
+        type: 'test_vak',
         user: tg.initDataUnsafe.user,
         answers: allAnswers,
         status_msg: true
@@ -603,7 +603,8 @@
         console.error("❌ Ошибка:", err);
         const errorData = {
           bot: '@Stikhanov_NLP_School_bot',
-          task: "test_vak",
+          task: 301,
+          type: 'test_vak',
           user: tg.initDataUnsafe.user,
           error: err.message,
           status_msg: false
