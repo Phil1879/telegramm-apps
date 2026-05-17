@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Выбор наставника</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome для иконок -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px 0;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .mentor-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .mentor-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+    
+    .mentor-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 60px;
+      object-fit: cover;
+      border: 4px solid #667eea;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .mentor-name {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      border-bottom: 3px solid #667eea;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+    
+    .mentor-description {
+      color: #555;
+      line-height: 1.6;
+      margin: 15px 0;
+      text-align: left;
+    }
+    
+    .mentor-description ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    
+    .mentor-description li {
+      margin: 8px 0;
+      list-style-type: none;
+      position: relative;
+      padding-left: 25px;
+    }
+    
+    .mentor-description li:before {
+      content: "✓";
+      color: #667eea;
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+    
+    .choose-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      transition: all 0.3s ease;
+    }
+    
+    .choose-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    h1 {
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+      .mentor-photo {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .mentor-name {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-3">
+    <h1 class="text-center">Выберите своего наставника</h1>
+
+    <div id="mentors-list">
+      <!-- Наставники будут динамически загружены через JavaScript -->
+    </div>
+  </div>
+
+  <!-- Telegram SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    
+    // Массив с данными наставников
+    // Здесь нужно указать Telegram ID каждого наставника в соответствующем порядке
+
+const mentors = [
+  {
+    id: 1,
+    telegram_id: 123456789, // Замените на реальный Telegram ID первого наставника
+    name: "Иван Иванов",
+    photo_url: "img/user-img.png", // Замените на реальную ссылку фото
+    description: "Сертифицированный консультант по зависимостям с многолетним опытом работы.",
+    education: "Высшее психологическое образование, Киевский национальный университет имени Тараса Шевченко",
+    experience: "Более 8 лет практики консультирования",
+    sobriety_years: "7 лет в трезвости",
+    achievements: "Автор методики восстановления, более 500 успешных кейсов"
+  },
+  {
+    id: 2,
+    telegram_id: 987654321, // Замените на реальный Telegram ID второго наставника
+    name: "Петр Петров",
+    photo_url: "img/user-img.png", // Замените на реальную ссылку фото
+    description: "Психолог, специалист по работе с созависимостью и семейным отношениям.",
+    education: "Кандидат психологических наук, Львовский национальный университет имени Ивана Франко",
+    experience: "Опыт работы 12 лет",
+    sobriety_years: "9 лет в трезвости",
+    achievements: "Восстановила более 300 семей"
+  },
+  {
+    id: 3,
+    telegram_id: 555666777, // Замените на реальный Telegram ID третьего наставника
+    name: "Сидор Сидоров",
+    photo_url: "img/user-img.png", // Замените на реальную ссылку фото
+    description: "Эксперт по мотивационному консультированию и профилактике рецидивов.",
+    education: "Одесский национальный университет имени И.И. Мечникова",
+    experience: "Опыт работы 6 лет",
+    sobriety_years: "5 лет в трезвости",
+    achievements: "Разработал уникальную программу поддержки"
+  },
+  {
+    id: 4,
+    telegram_id: 444333222, // Замените на реальный Telegram ID четвертого наставника
+    name: "Сергей Сергеев",
+    photo_url: "img/user-img.png", // Замените на реальную ссылку фото
+    description: "Клинический психолог, специалист по тревожным расстройствам и ПТСР.",
+    education: "Харьковский национальный университет имени В.Н. Каразина",
+    experience: "Опыт работы 10 лет",
+    sobriety_years: "11 лет в трезвости",
+    achievements: "Помогла более 1000 пациентам"
+  }
+];
+
+    
+    // Функция для рендеринга карточек наставников
+    function renderMentors() {
+      const container = document.getElementById('mentors-list');
+      container.innerHTML = '';
+      
+      mentors.forEach(mentor => {
+        const card = document.createElement('div');
+        card.className = 'mentor-card text-center';
+        
+        card.innerHTML = `
+          <div class="text-center">
+            <img src="${mentor.photo_url}" alt="${mentor.name}" class="mentor-photo" 
+                 onerror="this.src='https://via.placeholder.com/120x120?text=Нет+фото'">
+          </div>
+          <h2 class="mentor-name">${mentor.name}</h2>
+          <div class="mentor-description">
+            <p><strong>${mentor.description}</strong></p>
+            <ul>
+              <li><i class="fas fa-graduation-cap" style="color:#667eea; margin-right:10px;"></i> <strong>Образование:</strong> ${mentor.education}</li>
+              <li><i class="fas fa-briefcase" style="color:#667eea; margin-right:10px;"></i> <strong>Опыт работы:</strong> ${mentor.experience}</li>
+              <li><i class="fas fa-calendar-alt" style="color:#667eea; margin-right:10px;"></i> <strong>В трезвости:</strong> ${mentor.sobriety_years}</li>
+              <li><i class="fas fa-trophy" style="color:#667eea; margin-right:10px;"></i> <strong>Достижения:</strong> ${mentor.achievements}</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary choose-btn" data-mentor-id="${mentor.id}">
+            Выбрать наставника ${mentor.name}
+          </button>
+        `;
+        
+        container.appendChild(card);
+      });
+      
+      // Добавляем обработчики для кнопок
+      document.querySelectorAll('.choose-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const mentorId = parseInt(btn.dataset.mentorId);
+          const selectedMentor = mentors.find(m => m.id === mentorId);
+          if (selectedMentor) {
+            sendData(selectedMentor);
+          }
+        });
+      });
+    }
+    
+    function sendData(selectedMentor) {
+      // Получаем данные пользователя из Telegram
+      const user = tg.initDataUnsafe.user || {};
+      
+      // Формируем данные для отправки
+      const data = {
+        bot: '@Stikhanov_NLP_School_bot',
+        task: 402, // Важно для внутренней логики
+        sub: 0,
+        user: user,
+        mentor_selection: {
+          mentor_id: selectedMentor.id,
+          mentor_name: selectedMentor.name,
+          mentor_telegram_id: selectedMentor.telegram_id,
+          mentor_education: selectedMentor.education,
+          mentor_experience: selectedMentor.experience,
+          mentor_sustainability_years: selectedMentor.sobriety_years,
+          mentor_achievements: selectedMentor.achievements
+        },
+        selection_time: new Date().toISOString(),
+        status_msg: true
+      };
+      
+      // Отправляем на сервер
+      fetch("https://personally-profound-shark.ngrok-free.app/webhook/school-dz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.text();
+      })
+      .then(result => {
+        console.log("✅ Успех:", result);
+        tg.showAlert(`Вы успешно выбрали наставника ${selectedMentor.name}! Спасибо за выбор.`);
+        setTimeout(() => {
+          tg.close();
+        }, 2000);
+      })
+      .catch(err => {
+        console.error("❌ Ошибка:", err);
+        const errorData = {
+          bot: '@Stikhanov_NLP_School_bot',
+          task: 402,
+          user: user,
+          error: err.message,
+          selected_mentor: selectedMentor.name,
+          mentor_telegram_id: selectedMentor.telegram_id,
+          status_msg: false
+        };
+        
+        fetch("https://personally-profound-shark.ngrok-free.app/webhook/school-dz", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(errorData),
+        });
+        
+        tg.showAlert("Произошла ошибка при отправке. Пожалуйста, попробуйте позже.");
+      });
+    }
+    
+    // Инициализация страницы
+    renderMentors();
+    
+    // Настройка внешнего вида кнопки Telegram
+    tg.MainButton.hide();
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      tg.close();
+    });
+  </script>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
