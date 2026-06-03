@@ -189,30 +189,35 @@
         return response.json();
       })
       .then(data => {
-        console.log('✅ Получены данные:', data);
-        
-        // Ожидаем массив событий: [{date, time, summary, id}, ...]
-        if (Array.isArray(data)) {
-          events = data.map(event => ({
-            date: event.date || selectedDate,
-            time: event.time || '',
-            summary: event.summary || '',
-            id: event.id || null,
-            edited: false,
-            isNew: false
-          }));
-        } else if (data.events && Array.isArray(data.events)) {
-          events = data.events.map(event => ({
-            date: event.date || selectedDate,
-            time: event.time || '',
-            summary: event.summary || '',
-            id: event.id || null,
-            edited: false,
-            isNew: false
-          }));
-        } else {
-          events = [];
-        }
+  console.log('✅ Получены данные:', data);
+  
+  // n8n возвращает массив, где первый элемент содержит результат
+  let eventsData = [];
+  
+  if (Array.isArray(data)) {
+    // Если data — это массив, проверяем первый элемент
+    if (data.length > 0 && data[0].schedule && Array.isArray(data[0].schedule)) {
+      // Формат: [{ schedule: [...] }]
+      eventsData = data[0].schedule;
+    } else if (data.length > 0 && data[0].id) {
+      // Формат: [{ id: ..., summary: ..., date: ..., time: ... }, ...]
+      eventsData = data;
+    } else {
+      eventsData = data;
+    }
+  } else if (data.schedule && Array.isArray(data.schedule)) {
+    // Формат: { schedule: [...] }
+    eventsData = data.schedule;
+  }
+  
+  events = eventsData.map(event => ({
+    date: event.date || selectedDate,
+    time: event.time || '',
+    summary: event.summary || '',
+    id: event.id || null,
+    edited: false,
+    isNew: false
+  }));
         
         renderSchedule();
         hideAlert();
