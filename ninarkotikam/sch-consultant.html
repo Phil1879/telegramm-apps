@@ -197,8 +197,10 @@
   // data всегда приходит как массив от n8n: [{ schedule: [...] }]
   if (Array.isArray(data) && data.length > 0) {
     const firstItem = data[0];
-    if (firstItem.schedule && Array.isArray(firstItem.schedule)) {
-      eventsData = firstItem.schedule;
+    // Гипотеза: n8n оборачивает в .json
+    const innerData = firstItem.json || firstItem;
+    if (innerData.schedule && Array.isArray(innerData.schedule)) {
+      eventsData = innerData.schedule;
     }
   }
   
