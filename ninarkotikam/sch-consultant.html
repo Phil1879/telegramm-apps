@@ -15,33 +15,91 @@
       border-color: var(--tg-theme-button-color, #0d6efd);
       color: var(--tg-theme-button-text-color, #ffffff);
     }
-    .form-control {
+    .btn-outline-primary {
+      color: var(--tg-theme-button-color, #0d6efd);
+      border-color: var(--tg-theme-button-color, #0d6efd);
+    }
+    .btn-outline-danger {
+      color: #dc3545;
+      border-color: #dc3545;
+    }
+    .form-control, .form-select {
       background-color: var(--tg-theme-secondary-bg-color, #ffffff);
       color: var(--tg-theme-text-color, #212529);
       border-color: var(--tg-theme-hint-color, #ced4da);
-      text-align: center;
-      font-size: 1.1rem;
-      padding: 12px 35px 12px 12px;
     }
     input[type="date"] {
       position: relative;
       cursor: pointer;
+      text-align: center;
+      font-size: 1.1rem;
+      padding: 12px 35px 12px 12px;
     }
     input[type="date"]::-webkit-calendar-picker-indicator {
       position: absolute;
       right: 10px;
       cursor: pointer;
-      opacity: 0.6;
+    }
+    .event-row {
+      background: var(--tg-theme-secondary-bg-color, #ffffff);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--tg-theme-hint-color, #dee2e6);
+      transition: all 0.2s;
+    }
+    .event-row.edited {
+      border-left: 4px solid #ffc107;
+      background-color: #fff9e6;
+    }
+    .edited-badge {
+      font-size: 0.7rem;
+      background: #ffc107;
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .date-header {
+      background: var(--tg-theme-button-color, #0d6efd);
+      color: var(--tg-theme-button-text-color, #ffffff);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      font-weight: bold;
+      font-size: 1.1rem;
     }
     .alert {
       border-radius: 12px;
+    }
+    .event-time {
+      width: 100px;
+    }
+    .event-summary {
+      flex: 1;
+    }
+    .add-event-section {
+      background: var(--tg-theme-secondary-bg-color, #f1f3f5);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+      border: 2px dashed var(--tg-theme-hint-color, #adb5bd);
+    }
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: var(--tg-theme-hint-color, #6c757d);
+      font-size: 0.9rem;
+      text-transform: uppercase;
     }
   </style>
 </head>
 <body>
   <div class="container py-4">
-    <h4 class="mb-4 text-center">📅 Получить расписание</h4>
+    <h4 class="mb-4 text-center">📅 Расписание консультанта</h4>
 
+    <!-- Выбор даты -->
     <div class="mb-3">
       <label for="dateField" class="form-label fw-bold">Выберите дату:</label>
       <input type="date" id="dateField" class="form-control" required>
@@ -49,8 +107,16 @@
 
     <div id="statusAlert" class="alert d-none text-center" role="alert"></div>
 
-    <button id="fetchBtn" class="btn btn-primary w-100 py-2 mt-2" onclick="fetchSchedule()">
-      📋 Получить данные
+    <button id="fetchBtn" class="btn btn-primary w-100 py-2 mb-4" onclick="fetchSchedule()">
+      📋 Получить расписание
+    </button>
+
+    <!-- Контейнер для расписания -->
+    <div id="scheduleContainer"></div>
+
+    <!-- Кнопка сохранения -->
+    <button id="saveBtn" class="btn btn-success w-100 py-2 mt-3 d-none" onclick="saveSchedule()">
+      💾 Сохранить изменения
     </button>
   </div>
 
@@ -63,11 +129,17 @@
     const dateField = document.getElementById('dateField');
     const statusAlert = document.getElementById('statusAlert');
     const fetchBtn = document.getElementById('fetchBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const scheduleContainer = document.getElementById('scheduleContainer');
 
-    // --- Установка сегодняшней даты по Киеву (UTC+2 / UTC+3 с учётом летнего времени) ---
+    const webhookUrl = 'https://n8n.psyhodoc.xyz/webhook/sch-consultant';
+
+    // Хранилище событий (с техническими полями)
+    let events = [];
+
+    // --- Установка сегодняшней даты по Киеву ---
     function getKyivDateString() {
       const now = new Date();
-      // Формируем строку даты в часовом поясе Europe/Kyiv
       const kyivDate = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Kyiv' }));
       const yyyy = kyivDate.getFullYear();
       const mm = String(kyivDate.getMonth() + 1).padStart(2, '0');
@@ -75,7 +147,6 @@
       return `${yyyy}-${mm}-${dd}`;
     }
 
-    // Устанавливаем сегодняшнюю дату по умолчанию
     dateField.value = getKyivDateString();
 
     // --- Показ сообщений ---
@@ -89,16 +160,12 @@
       statusAlert.classList.add('d-none');
     }
 
-    // --- Клик по полю открывает календарь ---
+    // --- Открытие календаря при клике ---
     dateField.addEventListener('click', function() {
-      try {
-        this.showPicker();
-      } catch (e) {
-        // Игнорируем, если метод недоступен
-      }
+      try { this.showPicker(); } catch (e) {}
     });
 
-    // --- Отправка GET-запроса ---
+    // --- Получение расписания ---
     function fetchSchedule() {
       const selectedDate = dateField.value;
       
@@ -107,43 +174,322 @@
         return;
       }
 
-      // Показываем статус загрузки
       showAlert('⏳ Получаем расписание...', 'info');
       fetchBtn.disabled = true;
       fetchBtn.textContent = 'Загрузка...';
 
-      // URL вашего вебхука n8n для получения расписания
-      const webhookUrl = 'https://n8n.psyhodoc.xyz/webhook/sch-consultant';
-
-      // Формируем URL с параметром date
       const url = `${webhookUrl}?date=${encodeURIComponent(selectedDate)}`;
 
       fetch(url, {
         method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { 'Accept': 'application/json' }
       })
       .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP ошибка: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP ошибка: ${response.status}`);
         return response.json();
       })
       .then(data => {
-        console.log('✅ Ответ от вебхука:', data);
-        showAlert('✅ Данные получены! Проверьте консоль.', 'success');
+        console.log('✅ Получены данные:', data);
         
-        // Здесь позже будет обработка расписания из ответа
-        // Например: отобразить список событий на выбранную дату
+        // Ожидаем массив событий: [{date, time, summary, id}, ...]
+        if (Array.isArray(data)) {
+          events = data.map(event => ({
+            date: event.date || selectedDate,
+            time: event.time || '',
+            summary: event.summary || '',
+            id: event.id || null,
+            edited: false,
+            isNew: false
+          }));
+        } else if (data.events && Array.isArray(data.events)) {
+          events = data.events.map(event => ({
+            date: event.date || selectedDate,
+            time: event.time || '',
+            summary: event.summary || '',
+            id: event.id || null,
+            edited: false,
+            isNew: false
+          }));
+        } else {
+          events = [];
+        }
+        
+        renderSchedule();
+        hideAlert();
       })
       .catch(error => {
         console.error('❌ Ошибка:', error);
         showAlert(`❌ Ошибка: ${error.message}`, 'danger');
+        events = [];
+        renderSchedule();
       })
       .finally(() => {
         fetchBtn.disabled = false;
-        fetchBtn.textContent = '📋 Получить данные';
+        fetchBtn.textContent = '📋 Получить расписание';
+      });
+    }
+
+    // --- Отрисовка расписания ---
+    function renderSchedule() {
+      if (events.length === 0) {
+        scheduleContainer.innerHTML = `
+          <div class="text-center text-muted py-4">
+            <p>Нет событий на выбранную дату</p>
+          </div>
+          ${renderAddEventSection()}
+        `;
+        saveBtn.classList.add('d-none');
+        return;
+      }
+
+      // Сортируем по времени
+      events.sort((a, b) => a.time.localeCompare(b.time));
+
+      const selectedDate = dateField.value;
+      
+      // Форматируем дату для отображения
+      const displayDate = new Date(selectedDate + 'T00:00:00');
+      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDate = displayDate.toLocaleDateString('ru-RU', dateOptions);
+
+      let html = `
+        <div class="date-header">
+          📌 ${formattedDate}
+        </div>
+      `;
+
+      events.forEach((event, index) => {
+        html += renderEventRow(event, index);
+      });
+
+      html += renderAddEventSection();
+
+      scheduleContainer.innerHTML = html;
+      saveBtn.classList.remove('d-none');
+
+      // Навешиваем обработчики на поля ввода
+      attachEventHandlers();
+    }
+
+    // --- Отрисовка одной строки события ---
+    function renderEventRow(event, index) {
+      const editedClass = event.edited ? 'edited' : '';
+      const editedBadge = event.edited ? '<span class="edited-badge">изменено</span>' : '';
+      const newBadge = event.isNew ? '<span class="badge bg-success ms-1">новое</span>' : '';
+
+      return `
+        <div class="event-row ${editedClass}" data-index="${index}">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <input type="time" 
+                   class="form-control event-time" 
+                   value="${event.time}" 
+                   data-index="${index}" 
+                   data-field="time"
+                   style="width: 110px;">
+            <span class="mx-1">—</span>
+            <input type="text" 
+                   class="form-control event-summary" 
+                   value="${event.summary.replace(/"/g, '&quot;')}" 
+                   data-index="${index}" 
+                   data-field="summary"
+                   placeholder="Название события">
+            ${editedBadge}
+            ${newBadge}
+            <button class="btn btn-outline-danger btn-sm delete-btn" 
+                    data-index="${index}"
+                    title="Удалить событие">
+              ✕
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- Секция добавления нового события ---
+    function renderAddEventSection() {
+      return `
+        <div class="add-event-section">
+          <div class="section-title">➕ Добавить событие</div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <input type="time" 
+                   id="newEventTime" 
+                   class="form-control" 
+                   style="width: 110px;"
+                   placeholder="Время">
+            <span class="mx-1">—</span>
+            <input type="text" 
+                   id="newEventSummary" 
+                   class="form-control" 
+                   placeholder="Название нового события"
+                   style="flex: 1;">
+            <button class="btn btn-primary btn-sm" onclick="addNewEvent()" style="white-space: nowrap;">
+              Добавить
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- Навешивание обработчиков ---
+    function attachEventHandlers() {
+      // Обработчики изменений полей
+      document.querySelectorAll('[data-field]').forEach(input => {
+        input.addEventListener('input', function() {
+          const index = parseInt(this.dataset.index);
+          const field = this.dataset.field;
+          
+          if (events[index]) {
+            events[index][field] = this.value;
+            // Помечаем как изменённое (только для существующих событий)
+            if (!events[index].isNew) {
+              events[index].edited = true;
+            }
+            // Обновляем визуальное состояние строки
+            updateRowVisual(index);
+          }
+        });
+      });
+
+      // Обработчики кнопок удаления
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          deleteEvent(index);
+        });
+      });
+    }
+
+    // --- Обновление визуала строки ---
+    function updateRowVisual(index) {
+      const row = document.querySelector(`.event-row[data-index="${index}"]`);
+      if (!row || !events[index]) return;
+      
+      if (events[index].edited) {
+        row.classList.add('edited');
+        // Добавляем бейдж "изменено", если его ещё нет
+        if (!row.querySelector('.edited-badge')) {
+          const badge = document.createElement('span');
+          badge.className = 'edited-badge';
+          badge.textContent = 'изменено';
+          const deleteBtn = row.querySelector('.delete-btn');
+          deleteBtn.parentNode.insertBefore(badge, deleteBtn);
+        }
+      }
+    }
+
+    // --- Добавление нового события ---
+    function addNewEvent() {
+      const timeInput = document.getElementById('newEventTime');
+      const summaryInput = document.getElementById('newEventSummary');
+      
+      const time = timeInput.value;
+      const summary = summaryInput.value.trim();
+      
+      if (!time) {
+        showAlert('Укажите время для нового события.', 'warning');
+        timeInput.focus();
+        return;
+      }
+      
+      if (!summary) {
+        showAlert('Введите название события.', 'warning');
+        summaryInput.focus();
+        return;
+      }
+      
+      // Добавляем новое событие в массив
+      events.push({
+        date: dateField.value,
+        time: time,
+        summary: summary,
+        id: null,
+        edited: false,
+        isNew: true
+      });
+      
+      // Очищаем поля ввода
+      timeInput.value = '';
+      summaryInput.value = '';
+      
+      // Перерисовываем
+      renderSchedule();
+      showAlert('Событие добавлено. Нажмите "Сохранить изменения".', 'success');
+    }
+
+    // --- Удаление события ---
+    function deleteEvent(index) {
+      if (!events[index]) return;
+      
+      const event = events[index];
+      const confirmMsg = event.isNew 
+        ? 'Удалить новое событие?' 
+        : `Удалить событие "${event.summary}"? Это действие нужно будет сохранить.`;
+      
+      tg.showConfirm(confirmMsg, (confirmed) => {
+        if (confirmed) {
+          events.splice(index, 1);
+          renderSchedule();
+          showAlert('Событие удалено. Нажмите "Сохранить изменения".', 'info');
+        }
+      });
+    }
+
+    // --- Сохранение расписания (отправка на вебхук) ---
+    function saveSchedule() {
+      // Формируем массив для отправки
+      const payload = events.map(event => ({
+        date: event.date || dateField.value,
+        time: event.time,
+        summary: event.summary,
+        id: event.id,
+        new: event.isNew || false,
+        edit: event.edited || false
+      }));
+
+      // Проверяем, есть ли изменения
+      const hasChanges = payload.some(e => e.new || e.edit);
+      if (!hasChanges) {
+        showAlert('Нет изменений для сохранения.', 'warning');
+        return;
+      }
+
+      console.log('📤 Отправка данных:', payload);
+
+      showAlert('⏳ Сохраняем изменения...', 'info');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Сохранение...';
+
+      fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP ошибка: ${response.status}`);
+        return response.json();
+      })
+      .then(result => {
+        console.log('✅ Сохранено:', result);
+        showAlert('✅ Изменения сохранены!', 'success');
+        
+        // Сбрасываем флаги изменений
+        events.forEach(e => {
+          e.edited = false;
+          e.isNew = false;
+        });
+        
+        // Обновляем отображение
+        setTimeout(() => {
+          fetchSchedule();
+        }, 1000);
+      })
+      .catch(error => {
+        console.error('❌ Ошибка сохранения:', error);
+        showAlert(`❌ Ошибка: ${error.message}`, 'danger');
+      })
+      .finally(() => {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Сохранить изменения';
       });
     }
   </script>
