@@ -191,24 +191,18 @@
       .then(data => {
   console.log('✅ Получены данные:', data);
   
-  // n8n возвращает массив, где первый элемент содержит результат
+  // Извлекаем массив событий
   let eventsData = [];
   
-  if (Array.isArray(data)) {
-    // Если data — это массив, проверяем первый элемент
-    if (data.length > 0 && data[0].schedule && Array.isArray(data[0].schedule)) {
-      // Формат: [{ schedule: [...] }]
-      eventsData = data[0].schedule;
-    } else if (data.length > 0 && data[0].id) {
-      // Формат: [{ id: ..., summary: ..., date: ..., time: ... }, ...]
-      eventsData = data;
-    } else {
-      eventsData = data;
+  // data всегда приходит как массив от n8n: [{ schedule: [...] }]
+  if (Array.isArray(data) && data.length > 0) {
+    const firstItem = data[0];
+    if (firstItem.schedule && Array.isArray(firstItem.schedule)) {
+      eventsData = firstItem.schedule;
     }
-  } else if (data.schedule && Array.isArray(data.schedule)) {
-    // Формат: { schedule: [...] }
-    eventsData = data.schedule;
   }
+  
+  console.log('📋 Обработанные события:', eventsData);
   
   events = eventsData.map(event => ({
     date: event.date || selectedDate,
