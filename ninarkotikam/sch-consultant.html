@@ -191,20 +191,12 @@
       .then(data => {
   console.log('✅ Получены данные:', data);
   
-  // Извлекаем массив событий
   let eventsData = [];
   
-  // data всегда приходит как массив от n8n: [{ schedule: [...] }]
-  if (Array.isArray(data) && data.length > 0) {
-    const firstItem = data[0];
-    // Гипотеза: n8n оборачивает в .json
-    const innerData = firstItem.json || firstItem;
-    if (innerData.schedule && Array.isArray(innerData.schedule)) {
-      eventsData = innerData.schedule;
-    }
+  // data от n8n это массив: [{schedule: [...]}]
+  if (Array.isArray(data) && data.length > 0 && data[0].schedule) {
+    eventsData = data[0].schedule;
   }
-  
-  console.log('📋 Обработанные события:', eventsData);
   
   events = eventsData.map(event => ({
     date: event.date || selectedDate,
@@ -214,10 +206,10 @@
     edited: false,
     isNew: false
   }));
-        
-        renderSchedule();
-        hideAlert();
-      })
+  
+  renderSchedule();
+  hideAlert();
+})
       .catch(error => {
         console.error('❌ Ошибка:', error);
         showAlert(`❌ Ошибка: ${error.message}`, 'danger');
